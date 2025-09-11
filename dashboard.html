@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizAI - Dashboard</title>
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages/dashboard.css">
+</head>
+<body>
+    <div id="root">
+        <!-- Navigation -->
+        <header class="header" id="header">
+            <nav class="nav">
+                <a href="home.html" class="nav__logo">
+                    <span>QuizAI</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <ul class="nav__links">
+                    <li><a href="home.html" class="nav__link">Home</a></li>
+                    <li><a href="dashboard.html" class="nav__link nav__link--active">Dashboard</a></li>
+                    <li><a href="subjects.html" class="nav__link">Subjects</a></li>
+                    <li><a href="leaderboard.html" class="nav__link">Leaderboard</a></li>
+                    <li><a href="profile.html" class="nav__link">Profile</a></li>
+                </ul>
+
+                <div class="nav__actions">
+                    <a href="auth.html" class="btn btn--primary">
+                        <span>Get Started</span>
+                    </a>
+
+                    <!-- Mobile Menu Button -->
+                    <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Toggle mobile menu">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Mobile Navigation -->
+                <div class="nav__mobile" id="mobileMenu" style="display: none;">
+                    <button class="nav__mobile-close" id="mobileClose" aria-label="Close mobile menu">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                    <a href="home.html" class="nav__mobile-link">Home</a>
+                    <a href="dashboard.html" class="nav__mobile-link nav__mobile-link--active">Dashboard</a>
+                    <a href="subjects.html" class="nav__mobile-link">Subjects</a>
+                    <a href="leaderboard.html" class="nav__mobile-link">Leaderboard</a>
+                    <a href="profile.html" class="nav__mobile-link">Profile</a>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main id="main-content">
+            <div class="dashboard">
+                <div class="container">
+                    <!-- Welcome Panel -->
+                    <div class="welcome-panel">
+                        <div class="welcome-panel__avatar">
+                            <div class="avatar avatar--lg">
+                                <span>JD</span>
+                            </div>
+                        </div>
+                        
+                        <div class="welcome-panel__content">
+                            <h1>Welcome back, John!</h1>
+                            <p>Ready to continue your learning streak?</p>
+                        </div>
+
+                        <div class="xp-ring-container">
+                            <div class="xp-ring">
+                                <svg viewBox="0 0 100 100" class="xp-ring__svg">
+                                    <defs>
+                                        <linearGradient id="xpGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="var(--accent)" />
+                                            <stop offset="100%" stop-color="var(--primary)" />
+                                        </linearGradient>
+                                    </defs>
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="var(--bg-elev)" stroke-width="6"/>
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="url(#xpGradient)" stroke-width="6"
+                                            stroke-dasharray="283" stroke-dashoffset="85" transform="rotate(-90 50 50)" class="xp-progress"/>
+                                </svg>
+                                <div class="xp-ring__content">
+                                    <span class="xp-ring__percentage">70%</span>
+                                    <span class="xp-ring__label">Level 12</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dashboard Grid -->
+                    <div class="dashboard-grid">
+                        <!-- Stats Cards -->
+                        <div class="dashboard-section">
+                            <h2 class="section-title">Your Statistics</h2>
+                            <div class="stats-grid">
+                                <div class="stat-card stat-card--3d">
+                                    <div class="stat-card__icon">🔥</div>
+                                    <div class="stat-card__value">7</div>
+                                    <div class="stat-card__label">Day Streak</div>
+                                </div>
+                                <div class="stat-card stat-card--3d">
+                                    <div class="stat-card__icon">⭐</div>
+                                    <div class="stat-card__value">1,250</div>
+                                    <div class="stat-card__label">XP Points</div>
+                                </div>
+                                <div class="stat-card stat-card--3d">
+                                    <div class="stat-card__icon">🎯</div>
+                                    <div class="stat-card__value">15</div>
+                                    <div class="stat-card__label">Quizzes Completed</div>
+                                </div>
+                                <div class="stat-card stat-card--3d">
+                                    <div class="stat-card__icon">🏆</div>
+                                    <div class="stat-card__value">#5</div>
+                                    <div class="stat-card__label">Global Rank</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <div class="dashboard-section">
+                            <h2 class="section-title">Recent Activity</h2>
+                            <div class="activity-list">
+                                <div class="activity-item">
+                                    <div class="activity-item__info">
+                                        <h4>JavaScript Fundamentals</h4>
+                                        <p>2 hours ago</p>
+                                    </div>
+                                    <div class="activity-item__score">
+                                        <span class="score score--good">85%</span>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-item__info">
+                                        <h4>Data Structures</h4>
+                                        <p>Yesterday</p>
+                                    </div>
+                                    <div class="activity-item__score">
+                                        <span class="score score--excellent">92%</span>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-item__info">
+                                        <h4>Algorithms</h4>
+                                        <p>2 days ago</p>
+                                    </div>
+                                    <div class="activity-item__score">
+                                        <span class="score score--average">78%</span>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-item__info">
+                                        <h4>System Design</h4>
+                                        <p>3 days ago</p>
+                                    </div>
+                                    <div class="activity-item__score">
+                                        <span class="score score--good">88%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Daily Challenge -->
+                        <div class="challenge-card">
+                            <div class="challenge-card__header">
+                                <div class="challenge-card__icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                        <line x1="16" y1="2" x2="16" y2="6"/>
+                                        <line x1="8" y1="2" x2="8" y2="6"/>
+                                        <line x1="3" y1="10" x2="21" y2="10"/>
+                                    </svg>
+                                </div>
+                                <h3>Daily Challenge</h3>
+                            </div>
+                            <p class="challenge-card__description">
+                                Complete today's 5-question challenge to maintain your streak!
+                            </p>
+                            <div class="challenge-card__progress">
+                                <div class="progress-bar">
+                                    <div class="progress-bar__fill progress-bar__fill--animate"></div>
+                                </div>
+                                <span class="progress-text">3/5 questions</span>
+                            </div>
+                            <button class="btn btn--accent btn--full">
+                                Continue Challenge
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Page-specific JavaScript -->
+    <script src="js/shared/navigation.js"></script>
+    <script src="js/shared/theme.js"></script>
+    <script src="js/pages/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizAI - Chapters</title>
+    <!-- Shared CSS files -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="css/pages/chapters.css">
+</head>
+<body>
+    <div id="root">
+        <!-- Navigation -->
+        <header class="header" id="header">
+            <nav class="nav">
+                <a href="home.html" class="nav__logo">
+                    <span>QuizAI</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <ul class="nav__links">
+                    <li><a href="home.html" class="nav__link">Home</a></li>
+                    <li><a href="dashboard.html" class="nav__link">Dashboard</a></li>
+                    <li><a href="subjects.html" class="nav__link">Subjects</a></li>
+                    <li><a href="leaderboard.html" class="nav__link">Leaderboard</a></li>
+                    <li><a href="profile.html" class="nav__link">Profile</a></li>
+                </ul>
+
+                <div class="nav__actions">
+                    <a href="auth.html" class="btn btn--primary">
+                        <span>Get Started</span>
+                    </a>
+
+                    <!-- Mobile Menu Button -->
+                    <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Toggle mobile menu">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Mobile Navigation -->
+                <div class="nav__mobile" id="mobileMenu" style="display: none;">
+                    <button class="nav__mobile-close" id="mobileClose" aria-label="Close mobile menu">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                    <a href="home.html" class="nav__mobile-link">Home</a>
+                    <a href="dashboard.html" class="nav__mobile-link">Dashboard</a>
+                    <a href="subjects.html" class="nav__mobile-link">Subjects</a>
+                    <a href="leaderboard.html" class="nav__mobile-link">Leaderboard</a>
+                    <a href="profile.html" class="nav__mobile-link">Profile</a>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main id="main-content">
+            <div class="chapters-page">
+                <div class="container">
+                    <div class="chapters-header">
+                        <div class="breadcrumb">
+                            <a href="subjects.html" class="breadcrumb__link">Subjects</a>
+                            <span class="breadcrumb__separator">›</span>
+                            <span class="breadcrumb__current" id="subjectName">Mathematics</span>
+                        </div>
+                        <h1 class="page-title" id="pageTitle">Mathematics Chapters</h1>
+                        <p class="page-subtitle">Choose a chapter to start your learning journey</p>
+                    </div>
+
+                    <div class="chapters-grid" id="chaptersGrid">
+                        <!-- Chapters will be dynamically loaded based on subject -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Page-specific JavaScript -->
+    <script src="js/shared/navigation.js"></script>
+    <script src="js/shared/theme.js"></script>
+    <script src="js/pages/chapters.js"></script>
+</body>
+</html>

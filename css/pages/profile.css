@@ -1,0 +1,255 @@
+/* Profile Page Styles */
+.profile-page {
+  flex: 1;
+  padding: calc(80px + var(--space-2xl)) 0 var(--space-2xl);
+}
+
+.profile-header {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-2xl);
+  margin-bottom: var(--space-2xl);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-xl);
+  align-items: center;
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.profile-avatar-container {
+  position: relative;
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: var(--shadow-lg);
+  transition: transform var(--duration-normal) ease;
+}
+
+.profile-avatar:hover {
+  transform: scale(1.05);
+}
+
+.profile-avatar--default {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 2rem;
+  box-shadow: var(--shadow-lg);
+  transition: transform var(--duration-normal) ease;
+}
+
+.profile-avatar--default:hover {
+  transform: scale(1.05);
+}
+
+.avatar-upload-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 32px;
+  height: 32px;
+  background: var(--primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  transition: all var(--duration-normal) ease;
+  box-shadow: var(--shadow-md);
+  border: none;
+}
+
+.avatar-upload-btn:hover {
+  background: var(--primary-hover);
+  transform: scale(1.1);
+}
+
+.avatar-upload-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.profile-info h1 {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-sm);
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: slideInLeft 0.6s ease-out 0.2s forwards;
+}
+
+.profile-role {
+  color: var(--text-secondary);
+  font-size: 1.125rem;
+  margin-bottom: var(--space-lg);
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: slideInLeft 0.6s ease-out 0.3s forwards;
+}
+
+.profile-actions {
+  display: flex;
+  gap: var(--space-md);
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: slideInLeft 0.6s ease-out 0.4s forwards;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: var(--space-xl);
+}
+
+.profile-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-lg);
+  transition: all var(--duration-normal) ease;
+  transform: perspective(1000px) rotateX(0deg);
+  opacity: 0;
+  animation: fadeInUp 0.6s ease-out 0.3s forwards;
+}
+
+.profile-card:hover {
+  transform: perspective(1000px) rotateY(2deg) translateY(-5px);
+}
+
+.profile-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+}
+
+.profile-card__header h3 {
+  font-size: 1.25rem;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  transition: all var(--duration-normal) ease;
+}
+
+.icon-btn:hover {
+  background: var(--bg-elev);
+  color: var(--primary);
+}
+
+.profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.detail-value {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.achievements-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-lg);
+  transition: all var(--duration-normal) ease;
+  opacity: 0;
+  animation: fadeInUp 0.6s ease-out 0.4s forwards;
+}
+
+.achievements-card:hover {
+  transform: perspective(1000px) rotateY(2deg) translateY(-5px);
+}
+
+.achievements-card h3 {
+  margin-bottom: var(--space-lg);
+  font-size: 1.25rem;
+}
+
+.achievements-grid {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.achievement-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--bg-elev);
+  border-radius: var(--radius-lg);
+  transition: all var(--duration-normal) ease;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.8);
+  animation: scaleIn 0.4s ease-out forwards;
+}
+
+.achievement-badge:nth-child(1) { animation-delay: 0.6s; }
+.achievement-badge:nth-child(2) { animation-delay: 0.7s; }
+.achievement-badge:nth-child(3) { animation-delay: 0.8s; }
+.achievement-badge:nth-child(4) { animation-delay: 0.9s; }
+
+.achievement-badge:hover {
+  background: var(--glass-bg);
+  transform: translateX(5px) scale(1.05) rotateZ(5deg);
+}
+
+.achievement-icon {
+  font-size: 1.5rem;
+  min-width: 40px;
+}
+
+.achievement-content h4 {
+  font-size: 1rem;
+  margin-bottom: var(--space-xs);
+}
+
+.achievement-content p {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+

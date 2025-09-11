@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizAI - Authentication</title>
+    <!-- Shared CSS files -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="css/pages/auth.css">
+</head>
+<body>
+    <div id="root">
+        <!-- Navigation -->
+        <header class="header" id="header">
+            <nav class="nav">
+                <a href="home.html" class="nav__logo">
+                    <span>QuizAI</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <ul class="nav__links">
+                    <li><a href="home.html" class="nav__link">Home</a></li>
+                    <li><a href="dashboard.html" class="nav__link">Dashboard</a></li>
+                    <li><a href="subjects.html" class="nav__link">Subjects</a></li>
+                    <li><a href="leaderboard.html" class="nav__link">Leaderboard</a></li>
+                    <li><a href="profile.html" class="nav__link">Profile</a></li>
+                </ul>
+
+                <div class="nav__actions">
+                    <a href="auth.html" class="btn btn--primary">
+                        <span>Get Started</span>
+                    </a>
+
+                    <!-- Mobile Menu Button -->
+                    <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Toggle mobile menu">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Mobile Navigation -->
+                <div class="nav__mobile" id="mobileMenu" style="display: none;">
+                    <button class="nav__mobile-close" id="mobileClose" aria-label="Close mobile menu">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                    <a href="home.html" class="nav__mobile-link">Home</a>
+                    <a href="dashboard.html" class="nav__mobile-link">Dashboard</a>
+                    <a href="subjects.html" class="nav__mobile-link">Subjects</a>
+                    <a href="leaderboard.html" class="nav__mobile-link">Leaderboard</a>
+                    <a href="profile.html" class="nav__mobile-link">Profile</a>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main id="main-content">
+            <div class="auth-page">
+                <div class="container">
+                    <!-- Auth Card -->
+                    <div class="auth-card">
+                        <!-- Tab Navigation -->
+                        <div class="auth-tabs">
+                            <button class="auth-tab auth-tab--active" data-tab="login">
+                                <span>Sign In</span>
+                            </button>
+                            <button class="auth-tab" data-tab="signup">
+                                <span>Sign Up</span>
+                            </button>
+                        </div>
+
+                        <!-- Tab Content -->
+                        <div class="auth-form" id="authForm">
+                            <!-- Login Form -->
+                            <div class="auth-form__content" id="loginForm">
+                                <div class="auth-form__header">
+                                    <h2 class="auth-title">Welcome Back</h2>
+                                    <p class="auth-subtitle">Sign in to continue your learning journey</p>
+                                </div>
+                                
+                                <form class="form" onsubmit="return false;">
+                                    <div class="form__group">
+                                        <div class="form__input-wrapper">
+                                            <input type="email" class="form__input" placeholder=" " required>
+                                            <label class="form__label">Email Address</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form__group">
+                                        <div class="form__input-wrapper">
+                                            <input type="password" class="form__input password-input" placeholder=" " required>
+                                            <label class="form__label">Password</label>
+                                            <button type="button" class="form__toggle password-toggle">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                                    <circle cx="12" cy="12" r="3"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="form__options">
+                                        <label class="form__checkbox">
+                                            <input type="checkbox" class="checkbox-input">
+                                            <span class="checkbox-custom"></span>
+                                            <span class="checkbox-label">Remember me</span>
+                                        </label>
+                                        <a href="#" class="form__forgot">Forgot password?</a>
+                                    </div>
+
+                                    <button type="submit" class="btn btn--primary btn--full">
+                                        <span>Sign In</span>
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Signup Form -->
+                            <div class="auth-form__content hidden" id="signupForm">
+                                <div class="auth-form__header">
+                                    <h2 class="auth-title">Create Account</h2>
+                                    <p class="auth-subtitle">Join thousands of learners worldwide</p>
+                                </div>
+                                
+                                <form class="form" onsubmit="return false;">
+                                    <div class="form__group">
+                                        <div class="form__input-wrapper">
+                                            <input type="text" class="form__input" placeholder=" " required>
+                                            <label class="form__label">Full Name</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form__group">
+                                        <div class="form__input-wrapper">
+                                            <input type="email" class="form__input" placeholder=" " required>
+                                            <label class="form__label">Email Address</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form__group">
+                                        <div class="form__input-wrapper">
+                                            <input type="password" class="form__input password-input" placeholder=" " required>
+                                            <label class="form__label">Password</label>
+                                            <button type="button" class="form__toggle password-toggle">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                                    <circle cx="12" cy="12" r="3"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn--primary btn--full">
+                                        <span>Create Account</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Page-specific JavaScript -->
+    <script src="js/shared/navigation.js"></script>
+    <script src="js/shared/theme.js"></script>
+    <script src="js/pages/auth.js"></script>
+</body>
+</html>

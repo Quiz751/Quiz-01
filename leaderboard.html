@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizAI - Leaderboard</title>
+    <!-- Shared CSS files -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="css/pages/leaderboard.css">
+</head>
+<body>
+    <div id="root">
+        <!-- Navigation -->
+        <header class="header" id="header">
+            <nav class="nav">
+                <a href="home.html" class="nav__logo">
+                    <span>QuizAI</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <ul class="nav__links">
+                    <li><a href="home.html" class="nav__link">Home</a></li>
+                    <li><a href="dashboard.html" class="nav__link">Dashboard</a></li>
+                    <li><a href="subjects.html" class="nav__link">Subjects</a></li>
+                    <li><a href="leaderboard.html" class="nav__link nav__link--active">Leaderboard</a></li>
+                    <li><a href="profile.html" class="nav__link">Profile</a></li>
+                </ul>
+
+                <div class="nav__actions">
+                    <a href="auth.html" class="btn btn--primary">
+                        <span>Get Started</span>
+                    </a>
+
+                    <!-- Mobile Menu Button -->
+                    <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Toggle mobile menu">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Mobile Navigation -->
+                <div class="nav__mobile" id="mobileMenu" style="display: none;">
+                    <button class="nav__mobile-close" id="mobileClose" aria-label="Close mobile menu">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                    <a href="home.html" class="nav__mobile-link">Home</a>
+                    <a href="dashboard.html" class="nav__mobile-link">Dashboard</a>
+                    <a href="subjects.html" class="nav__mobile-link">Subjects</a>
+                    <a href="leaderboard.html" class="nav__mobile-link nav__mobile-link--active">Leaderboard</a>
+                    <a href="profile.html" class="nav__mobile-link">Profile</a>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main id="main-content">
+            <div class="leaderboard-page">
+                <div class="container">
+                    <div class="leaderboard-header">
+                        <h1 class="page-title">Global Leaderboard</h1>
+                        <p class="page-subtitle">See how you rank among the best learners worldwide</p>
+                    </div>
+
+                    <!-- Stats Overview -->
+                    <div class="leaderboard-stats">
+                        <div class="stat-card stat-card--3d">
+                            <div class="stat-card__icon">🏆</div>
+                            <div class="stat-card__value">2,890</div>
+                            <div class="stat-card__label">Top Score</div>
+                        </div>
+                        <div class="stat-card stat-card--3d">
+                            <div class="stat-card__icon">👥</div>
+                            <div class="stat-card__value">15,234</div>
+                            <div class="stat-card__label">Active Players</div>
+                        </div>
+                        <div class="stat-card stat-card--3d">
+                            <div class="stat-card__icon">🔥</div>
+                            <div class="stat-card__value">42</div>
+                            <div class="stat-card__label">Day Streak Record</div>
+                        </div>
+                    </div>
+
+                    <!-- Podium -->
+                    <div class="podium-container">
+                        <div class="podium">
+                            <div class="podium__place podium__place--2">
+                                <div class="podium__glow"></div>
+                                
+                                <div class="podium__avatar">
+                                    <span>AS</span>
+                                </div>
+                                
+                                <h3 class="podium__name">Alex Smith</h3>
+                                <p class="podium__xp">2,450 XP</p>
+                                
+                                <div class="podium__medal">🥈</div>
+                            </div>
+
+                            <div class="podium__place podium__place--1">
+                                <div class="podium__glow"></div>
+                                
+                                <div class="podium__avatar">
+                                    <span>MJ</span>
+                                </div>
+                                
+                                <h3 class="podium__name">Maria Johnson</h3>
+                                <p class="podium__xp">2,890 XP</p>
+                                
+                                <div class="podium__medal">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="podium__place podium__place--3">
+                                <div class="podium__glow"></div>
+                                
+                                <div class="podium__avatar">
+                                    <span>DL</span>
+                                </div>
+                                
+                                <h3 class="podium__name">David Lee</h3>
+                                <p class="podium__xp">2,120 XP</p>
+                                
+                                <div class="podium__medal">🥉</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="leaderboard-filters">
+                        <button class="filter-btn" data-filter="daily">Daily</button>
+                        <button class="filter-btn filter-btn--active" data-filter="weekly">Weekly</button>
+                        <button class="filter-btn" data-filter="monthly">Monthly</button>
+                        <button class="filter-btn" data-filter="all">All Time</button>
+                    </div>
+
+                    <!-- Rankings List -->
+                    <div class="rankings-container">
+                        <h2 class="section-title">Current Rankings</h2>
+                        <div class="rankings-list">
+                            <div class="ranking-item">
+                                <div class="ranking-item__position">
+                                    <span>4</span>
+                                </div>
+                                
+                                <div class="ranking-item__avatar">
+                                    <span>SK</span>
+                                </div>
+                                
+                                <div class="ranking-item__info">
+                                    <h4>Sarah Kim</h4>
+                                    <p>Computer Science • 🔥 15 day streak</p>
+                                </div>
+                                
+                                <div class="ranking-item__stats">
+                                    <span class="ranking-item__xp">1,980 XP</span>
+                                    <div class="ranking-item__trend">
+                                        <span class="trend-icon--up">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="22,7 13.5,15.5 8.5,10.5 2,17"/>
+                                                <polyline points="16,7 22,7 22,13"/>
+                                            </svg>
+                                        </span>
+                                        <span class="trend-value trend-value--up">+50</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ranking-item ranking-item--highlight">
+                                <div class="ranking-item__position">
+                                    <span>5</span>
+                                </div>
+                                
+                                <div class="ranking-item__avatar">
+                                    <span>JD</span>
+                                </div>
+                                
+                                <div class="ranking-item__info">
+                                    <h4>John Doe</h4>
+                                    <p>Software Engineering • 🔥 7 day streak</p>
+                                </div>
+                                
+                                <div class="ranking-item__stats">
+                                    <span class="ranking-item__xp">1,850 XP</span>
+                                    <div class="ranking-item__trend">
+                                        <span class="trend-icon--down">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="22,17 13.5,8.5 8.5,13.5 2,7"/>
+                                                <polyline points="16,17 22,17 22,11"/>
+                                            </svg>
+                                        </span>
+                                        <span class="trend-value trend-value--down">-25</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ranking-item">
+                                <div class="ranking-item__position">
+                                    <span>6</span>
+                                </div>
+                                
+                                <div class="ranking-item__avatar">
+                                    <span>EM</span>
+                                </div>
+                                
+                                <div class="ranking-item__info">
+                                    <h4>Emma Martinez</h4>
+                                    <p>Data Science • 🔥 12 day streak</p>
+                                </div>
+                                
+                                <div class="ranking-item__stats">
+                                    <span class="ranking-item__xp">1,720 XP</span>
+                                    <div class="ranking-item__trend">
+                                        <span class="trend-icon--up">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="22,7 13.5,15.5 8.5,10.5 2,17"/>
+                                                <polyline points="16,7 22,7 22,13"/>
+                                            </svg>
+                                        </span>
+                                        <span class="trend-value trend-value--up">+75</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ranking-item">
+                                <div class="ranking-item__position">
+                                    <span>7</span>
+                                </div>
+                                
+                                <div class="ranking-item__avatar">
+                                    <span>RT</span>
+                                </div>
+                                
+                                <div class="ranking-item__info">
+                                    <h4>Ryan Taylor</h4>
+                                    <p>Cybersecurity • 🔥 3 day streak</p>
+                                </div>
+                                
+                                <div class="ranking-item__stats">
+                                    <span class="ranking-item__xp">1,650 XP</span>
+                                    <div class="ranking-item__trend">
+                                        <span class="trend-icon--neutral">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                            </svg>
+                                        </span>
+                                        <span class="trend-value trend-value--neutral">0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ranking-item">
+                                <div class="ranking-item__position">
+                                    <span>8</span>
+                                </div>
+                                
+                                <div class="ranking-item__avatar">
+                                    <span>LW</span>
+                                </div>
+                                
+                                <div class="ranking-item__info">
+                                    <h4>Lisa Wang</h4>
+                                    <p>Machine Learning • 🔥 20 day streak</p>
+                                </div>
+                                
+                                <div class="ranking-item__stats">
+                                    <span class="ranking-item__xp">1,580 XP</span>
+                                    <div class="ranking-item__trend">
+                                        <span class="trend-icon--up">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="22,7 13.5,15.5 8.5,10.5 2,17"/>
+                                                <polyline points="16,7 22,7 22,13"/>
+                                            </svg>
+                                        </span>
+                                        <span class="trend-value trend-value--up">+120</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Page-specific JavaScript -->
+    <script src="js/shared/navigation.js"></script>
+    <script src="js/shared/theme.js"></script>
+    <script src="js/pages/leaderboard.js"></script>
+</body>
+</html>

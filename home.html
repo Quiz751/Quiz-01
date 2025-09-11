@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizAI - Home</title>
+    <!-- Shared CSS files -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="css/pages/home.css">
+</head>
+
+<body>
+    <div id="root">
+        <!-- Navigation -->
+        <header class="header" id="header">
+            <nav class="nav">
+                <a href="home.html" class="nav__logo">
+                    <span>QuizAI</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <ul class="nav__links">
+                    <li><a href="home.html" class="nav__link nav__link--active">Home</a></li>
+                    <li><a href="dashboard.html" class="nav__link">Dashboard</a></li>
+                    <li><a href="subjects.html" class="nav__link">Subjects</a></li>
+                    <li><a href="leaderboard.html" class="nav__link">Leaderboard</a></li>
+                    <li><a href="profile.html" class="nav__link">Profile</a></li>
+                </ul>
+                <div class="nav__actions">
+                    <a href="auth.html" class="btn btn--primary">
+                        <span>Get Started</span>
+                    </a>
+
+                    <!-- Mobile Menu Button -->
+                    <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Toggle mobile menu">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Mobile Navigation -->
+                <div class="nav__mobile" id="mobileMenu" style="display: none;">
+                    <button class="nav__mobile-close" id="mobileClose" aria-label="Close mobile menu">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                    <a href="home.html" class="nav__mobile-link nav__mobile-link--active">Home</a>
+                    <a href="dashboard.html" class="nav__mobile-link">Dashboard</a>
+                    <a href="subjects.html" class="nav__mobile-link">Subjects</a>
+                    <a href="leaderboard.html" class="nav__mobile-link">Leaderboard</a>
+                    <a href="profile.html" class="nav__mobile-link">Profile</a>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main id="main-content">
+            <div class="home">
+                <!-- Floating Background Elements -->
+                <div class="floating-orbs">
+                    <div class="orb orb--1"></div>
+                    <div class="orb orb--2"></div>
+                    <div class="orb orb--3"></div>
+                </div>
+
+                <!-- Hero Section -->
+                <section class="hero">
+                    <div class="container">
+                        <div class="hero__content">
+                            <h1 class="hero__title">
+                                Unlock Your Potential,
+                                <span class="hero__title-highlight"> One Question</span> at a Time
+                            </h1>
+
+                            <p class="hero__subtitle">
+                                Experience the future of learning with AI-powered quizzes that adapt to your unique
+                                learning style and accelerate your academic success.
+                            </p>
+
+                            <div class="hero__cta">
+                                <a href="subjects.html" class="btn btn--primary btn--lg btn--glow">
+                                    <span>Start Your Journey</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Features Section -->
+                <section class="features">
+                    <div class="container">
+                        <div class="features__grid">
+                            <div class="feature-card" tabindex="0">
+                                <div class="feature-card__inner">
+                                    <div class="feature-card__front">
+                                        <div class="feature-card__icon">
+                                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                                <path
+                                                    d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" />
+                                                <path
+                                                    d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z" />
+                                                <path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4" />
+                                                <path d="M17.599 6.5a3 3 0 0 0 .399-1.375" />
+                                                <path d="M6.003 5.125A3 3 0 0 0 6.401 6.5" />
+                                                <path d="M3.477 10.896a4 4 0 0 1 .585-.396" />
+                                                <path d="M19.938 10.5a4 4 0 0 1 .585.396" />
+                                                <path d="M6 18a4 4 0 0 1-1.967-.516" />
+                                                <path d="M19.967 17.484A4 4 0 0 1 18 18" />
+                                            </svg>
+                                        </div>
+                                        <h3>AI-Powered Learning</h3>
+                                        <p>Smart algorithms that understand you</p>
+                                    </div>
+                                    <div class="feature-card__back">
+                                        <h3>AI-Powered Learning</h3>
+                                        <p>Our advanced AI analyzes your learning patterns, identifies knowledge gaps,
+                                            and creates customized question sets that challenge you at the perfect
+                                            difficulty level.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="feature-card" tabindex="0">
+                                <div class="feature-card__inner">
+                                    <div class="feature-card__front">
+                                        <div class="feature-card__icon">
+                                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                                <polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2" />
+                                            </svg>
+                                        </div>
+                                        <h3>Instant Feedback</h3>
+                                        <p>Real-time explanations and insights</p>
+                                    </div>
+                                    <div class="feature-card__back">
+                                        <h3>Instant Feedback</h3>
+                                        <p>Get comprehensive explanations instantly, with detailed breakdowns of
+                                            concepts, common mistakes, and connections to related topics for deeper
+                                            learning.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="feature-card" tabindex="0">
+                                <div class="feature-card__inner">
+                                    <div class="feature-card__front">
+                                        <div class="feature-card__icon">
+                                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                                <path
+                                                    d="M4.5 16.5c-1.5 1.5-2 5 2 5s3.5-.5 5-2l1.5-1.5L7 12l-2.5 4.5z" />
+                                                <path
+                                                    d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+                                                <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
+                                                <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+                                            </svg>
+                                        </div>
+                                        <h3>Accelerated Growth</h3>
+                                        <p>Track progress and achieve goals faster</p>
+                                    </div>
+                                    <div class="feature-card__back">
+                                        <h3>Accelerated Growth</h3>
+                                        <p>Monitor your improvement with detailed analytics, celebrate milestones, and
+                                            stay motivated with gamified learning experiences that make studying
+                                            enjoyable.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Page-specific JavaScript -->
+    <script src="js/shared/navigation.js"></script>
+    <script src="js/shared/theme.js"></script>
+    <script src="js/pages/home.js"></script>
+</body>
+
+</html>
