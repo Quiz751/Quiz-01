@@ -252,4 +252,44 @@
   color: var(--text-secondary);
   font-size: 0.875rem;
 }
+@media (max-width: 768px) {
+  .profile-header {
+    grid-template-columns: 1fr; /* stack items */
+    text-align: center;
+    padding: var(--space-lg);
+  }
+
+  .profile-avatar-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--space-md);
+  }
+
+  .profile-info {
+    text-align: center;
+  }
+
+  .profile-info h1 {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-sm);
+  }
+
+  .profile-role {
+    font-size: 1rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .profile-actions {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .profile-grid {
+    grid-template-columns: 1fr; /* single column */
+    gap: var(--space-lg);
+  }
+  main {
+      padding-bottom: 80px;}
+      
+}
 

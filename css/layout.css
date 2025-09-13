@@ -188,4 +188,66 @@
   .achievement-item { padding: var(--space-sm); }
   .avatar-actions { flex-direction: column; }
 }
+/* Mobile + Tablet Bottom Navigation */
+.bottom-nav {
+  display: none; /* hide by default on desktop */
+}
+
+@media (max-width: 1024px) {
+  .bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background:#1e293b; /* light background like WhatsApp */
+    border-top: 1px solid #1e293b;
+    padding: 8px 0;
+    z-index: 9999;
+    box-shadow: 0 -1px 5px rgba(0,0,0,0.1); /* subtle shadow */
+    border-radius: 0px; /* optional rounded top corners */
+  }
+
+  .bottom-nav__link {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #f9f9ff; /* inactive color */
+    font-size: 0.7rem;
+    gap: 4px;
+    transition: color 0.2s ease;
+  }
+
+  .bottom-nav__link .icon {
+    font-size: 1.5rem; /* suitable icon size */
+    line-height: 1;
+  }
+
+  .bottom-nav__link--active {
+  color: #f9f9ff;       /* active color */
+  border: 2px solid #548aee;  /* box around active link */
+  border-radius: 8px;
+  padding: 2px 0;   
+       
+}
+
+  .bottom-nav__link--active .icon {
+    /* optionally make active icon slightly bigger */
+    transform: scale(1.2);
+  }
+
+  .bottom-nav__link:hover {
+    color: #6366f1; /* hover effect on mobile */
+  }
+   #mobileToggle{
+  display: none;
+ }
+
+}
+
 

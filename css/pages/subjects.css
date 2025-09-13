@@ -150,4 +150,47 @@
   font-weight: 500;
   color: var(--text-secondary);
 }
-
+@media (max-width: 768px) {
+.subjects-grid 
+{ 
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+.subject-card 
+{
+  padding: 12px; 
+  border: 3px solid #211f87; /* border for small box effect */ 
+  border-radius: 8px; /* chinna rounded corners */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* subtle shadow */ 
+  margin: 0; /* edge ki gap levu */
+  width: 100%; /* container full width */ 
+  box-sizing: border-box; /* padding+border correct size ki */
+} 
+.subject-card__inner
+ {
+  padding: 10px; /* card internal spacing */ 
+} 
+.subject-card__title
+ {
+  font-size: 1.5rem; /* small font */
+  }
+.subject-card__description
+{ 
+   font-size: 0.875rem; /* chinna text */
+ } 
+  .progress-bar
+{ 
+  height: 6px; /* chinna progress bar height */
+   } 
+ .btn--full
+ {
+   font-size: 0.875rem; /* button size reduce */
+  padding: 8px 0; 
+  } 
+  .subjects-page .container 
+  { 
+    padding-left: 20px;
+     padding-right: 20px; 
+    }
+}
