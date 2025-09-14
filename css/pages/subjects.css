@@ -104,50 +104,9 @@
 
 .subject-card__description {
   color: var(--text-secondary);
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-2xl);
   line-height: 1.6;
 }
 
-.subject-card__stats {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: var(--space-lg);
-}
 
-.stat {
-  text-align: center;
-}
-
-.stat__label {
-  display: block;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin-bottom: var(--space-xs);
-  text-transform: uppercase;
-  font-weight: 500;
-}
-
-.stat__value {
-  font-weight: 700;
-  font-size: 1.125rem;
-  color: var(--text);
-}
-
-.stat__value--difficulty {
-  font-size: 0.875rem;
-}
-
-.subject-card__progress {
-  margin-bottom: var(--space-lg);
-}
-
-.progress-label {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-sm);
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-}
 
