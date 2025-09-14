@@ -53,7 +53,7 @@ function loadChapters(subject, subjectsData) {
     
     // Update page title and breadcrumb
     document.getElementById('subjectName').textContent = subjectData.name;
-    document.getElementById('pageTitle').textContent = `${subjectData.name} Chapters`;
+    document.getElementById('pageTitle').textContent = ${subjectData.name} Chapters;
     
     // Generate chapter cards
     const chaptersGrid = document.getElementById('chaptersGrid');
@@ -68,7 +68,7 @@ function loadChapters(subject, subjectsData) {
 function createChapterCard(chapter, subject, index) {
     const card = document.createElement('a');
     card.className = 'chapter-card';
-    card.href = `quiz.html?subject=${subject}&chapter=${chapter.name.toLowerCase()}`;
+    card.href = quiz.html?subject=${subject}&chapter=${chapter.name.toLowerCase()};
     card.setAttribute('data-chapter', chapter.name.toLowerCase());
     
     card.innerHTML = `
