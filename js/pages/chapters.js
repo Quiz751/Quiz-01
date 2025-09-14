@@ -1,68 +1,102 @@
-// Chapters Page JavaScript
-document.addEventListener('DOMContentLoaded', function() {
-    // Get subject from URL parameters
+// js/pages/chapters.js
+
+document.addEventListener('DOMContentLoaded', function () {
     const urlParams = new URLSearchParams(window.location.search);
-    const subject = urlParams.get('subject') || 'mathematics';
-    
-    // Demo data for subjects and their chapters
+    const subject = urlParams.get('subject') || 'algorithms';
+
+    // ======== Put your subjects and their chapters here ========
     const subjectsData = {
-        mathematics: {
-            name: 'Mathematics',
+        "algorithms": {
+            name: "Algorithms & Data Structures",
             chapters: [
-                { name: 'Algebra', description: 'Basic algebraic concepts and equations' },
-                { name: 'Geometry', description: 'Shapes, angles, and spatial relationships' },
-                { name: 'Calculus', description: 'Derivatives, integrals, and limits' }
+                { name: "Sorting Algorithms", description: "Bubble, Merge, Quick and more." },
+                { name: "Searching Algorithms", description: "Binary search, linear search." },
+                { name: "Dynamic Programming", description: "DP patterns and examples." },
+                { name: "Graph Algorithms", description: "BFS, DFS, shortest paths." }
             ]
         },
-        science: {
-            name: 'Science',
+        "databases": {
+            name: "Database Systems",
             chapters: [
-                { name: 'Physics', description: 'Motion, forces, and energy' },
-                { name: 'Chemistry', description: 'Elements, compounds, and reactions' },
-                { name: 'Biology', description: 'Living organisms and life processes' }
+                { name: "SQL Basics", description: "SELECT, INSERT, UPDATE, DELETE." },
+                { name: "Joins & Queries", description: "Inner, Left, Right, Full joins." },
+                { name: "Normalization", description: "1NF, 2NF, 3NF concepts." },
+                { name: "Indexing & Optimization", description: "Indexes, EXPLAIN." }
             ]
         },
-        history: {
-            name: 'History',
+        "operating-systems": {
+            name: "Operating Systems",
             chapters: [
-                { name: 'Ancient', description: 'Ancient civilizations and early history' },
-                { name: 'Medieval', description: 'Middle Ages and medieval period' },
-                { name: 'Modern', description: 'Modern history and contemporary events' }
+                { name: "Process Management", description: "Processes, threads, context switch." },
+                { name: "Memory Management", description: "Paging, segmentation, virtual memory." },
+                { name: "Scheduling", description: "FCFS, SJF, Round Robin." },
+                { name: "File Systems", description: "FS basics, permissions." }
+            ]
+        },
+        "cybersecurity": {
+            name: "Cybersecurity",
+            chapters: [
+                { name: "Cryptography", description: "Symmetric/asymmetric encryption basics." },
+                { name: "Network Security", description: "Firewalls, VPNs, secure protocols." },
+                { name: "Web Security", description: "XSS, CSRF, SQLi prevention." },
+                { name: "Ethical Hacking", description: "Pentesting intro and tools." }
+            ]
+        },
+        "machine-learning": {
+            name: "Machine Learning",
+            chapters: [
+                { name: "Supervised Learning", description: "Regression and classification." },
+                { name: "Unsupervised Learning", description: "Clustering, dimensionality reduction." },
+                { name: "Neural Networks", description: "Perceptron, forward/backprop." },
+                { name: "Model Evaluation", description: "Metrics, cross-validation." }
+            ]
+        },
+        "web-development": {
+            name: "Web Development",
+            chapters: [
+                { name: "HTML & CSS", description: "Structure and styling web pages." },
+                { name: "JavaScript Basics", description: "DOM, events, JS fundamentals." },
+                { name: "Frontend Frameworks", description: "React, Vue, Angular overview." },
+                { name: "Backend Development", description: "APIs, server, databases." }
+            ]
+        },
+        // optional: AI Quiz subject (if you included it)
+        "ai-quiz": {
+            name: "AI Adaptive Quiz",
+            chapters: [
+                { name: "Adaptive Quiz", description: "AI generates personalized questions." }
             ]
         }
     };
-    
-    // Show loading state first
+    // ======== end subjectsData ========
+
     showLoadingState();
-    
-    // Load chapters for the selected subject with a slight delay for better UX
+
     setTimeout(() => {
         loadChapters(subject, subjectsData);
         setupChapterNavigation();
-    }, 500);
+    }, 250);
 });
 
 function loadChapters(subject, subjectsData) {
     const subjectData = subjectsData[subject];
-    
+
     if (!subjectData) {
-        // Fallback to mathematics if subject not found
-        loadChapters('mathematics', subjectsData);
+        showErrorState("Subject not found. Please go back to Subjects.");
         return;
     }
-    
+
     // Update page title and breadcrumb
-    document.getElementById('subjectName').textContent = subjectData.name;
-    document.getElementById('pageTitle').textContent = `${subjectData.name} Chapters`;
-    
+    const subjectNameEl = document.getElementById('subjectName');
+    const pageTitleEl = document.getElementById('pageTitle');
+    if (subjectNameEl) subjectNameEl.textContent = subjectData.name;
+    if (pageTitleEl) pageTitleEl.textContent = `${subjectData.name} Chapters`;
+
     // Generate chapter cards
     const chaptersGrid = document.getElementById('chaptersGrid');
+    if (!chaptersGrid) return;
     chaptersGrid.innerHTML = '';
-    
-    // Add the Complete Subject Quiz card first
-    const completeSubjectCard = createCompleteSubjectCard(subject);
-    chaptersGrid.appendChild(completeSubjectCard);
-    
+
     subjectData.chapters.forEach((chapter, index) => {
         const chapterCard = createChapterCard(chapter, subject, index);
         chaptersGrid.appendChild(chapterCard);
@@ -74,74 +108,63 @@ function createCompleteSubjectCard(subject) {
     card.className = 'chapter-card complete-subject-card';
     card.href = `quiz.html?subject=${subject}&chapter=complete`;
     card.setAttribute('data-chapter', 'complete');
-    
+
     card.innerHTML = `
         <div class="chapter-card__content">
             <h3 class="chapter-card__title">Complete Subject Quiz</h3>
             <p class="chapter-card__description">Test knowledge across all chapters</p>
         </div>
     `;
-    
+
     return card;
 }
 
 function createChapterCard(chapter, subject, index) {
     const card = document.createElement('a');
     card.className = 'chapter-card';
-    card.href = `quiz.html?subject=${subject}&chapter=${chapter.name.toLowerCase()}`;
-    card.setAttribute('data-chapter', chapter.name.toLowerCase());
-    
+
+    // create safe chapter slug (kebab-case)
+    const slug = chapter.name.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+    card.href = `quiz.html?subject=${encodeURIComponent(subject)}&chapter=${encodeURIComponent(slug)}`;
+    card.setAttribute('data-chapter', slug);
+
     card.innerHTML = `
         <div class="chapter-card__content">
             <h3 class="chapter-card__title">${chapter.name}</h3>
             <p class="chapter-card__description">${chapter.description}</p>
         </div>
     `;
-    
     return card;
 }
 
 function setupChapterNavigation() {
-    // Add smooth transition effects
     const chapterCards = document.querySelectorAll('.chapter-card');
-    
     chapterCards.forEach(card => {
-        card.addEventListener('click', function(e) {
+        card.addEventListener('click', function (e) {
             e.preventDefault();
-            
-            // Add click animation
-            this.style.transform = 'scale(0.95)';
+            this.style.transform = 'scale(0.97)';
             setTimeout(() => {
                 this.style.transform = '';
-                // Navigate to quiz page
                 window.location.href = this.href;
-            }, 150);
-        });
-        
-        // Add hover sound effect (optional)
-        card.addEventListener('mouseenter', function() {
-            // You can add a subtle sound effect here if desired
+            }, 120);
         });
     });
 }
 
-// Handle browser back button
-window.addEventListener('popstate', function() {
-    // Reload the page to handle back navigation properly
+window.addEventListener('popstate', function () {
     window.location.reload();
 });
 
-// Add keyboard navigation support
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
-        // Go back to subjects page
         window.location.href = 'subjects.html';
     }
 });
 
-// Add loading animation
+// Loading UI
 function showLoadingState() {
     const chaptersGrid = document.getElementById('chaptersGrid');
+    if (!chaptersGrid) return;
     chaptersGrid.innerHTML = `
         <div class="loading-state">
             <div class="loading-spinner">
@@ -154,9 +177,10 @@ function showLoadingState() {
     `;
 }
 
-// Add error handling
+// Error UI
 function showErrorState(message) {
     const chaptersGrid = document.getElementById('chaptersGrid');
+    if (!chaptersGrid) return;
     chaptersGrid.innerHTML = `
         <div class="error-state">
             <div class="error-icon">⚠️</div>
