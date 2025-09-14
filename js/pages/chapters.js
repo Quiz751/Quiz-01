@@ -59,10 +59,30 @@ function loadChapters(subject, subjectsData) {
     const chaptersGrid = document.getElementById('chaptersGrid');
     chaptersGrid.innerHTML = '';
     
+    // Add the Complete Subject Quiz card first
+    const completeSubjectCard = createCompleteSubjectCard(subject);
+    chaptersGrid.appendChild(completeSubjectCard);
+    
     subjectData.chapters.forEach((chapter, index) => {
         const chapterCard = createChapterCard(chapter, subject, index);
         chaptersGrid.appendChild(chapterCard);
     });
+}
+
+function createCompleteSubjectCard(subject) {
+    const card = document.createElement('a');
+    card.className = 'chapter-card complete-subject-card';
+    card.href = `quiz.html?subject=${subject}&chapter=complete`;
+    card.setAttribute('data-chapter', 'complete');
+    
+    card.innerHTML = `
+        <div class="chapter-card__content">
+            <h3 class="chapter-card__title">Complete Subject Quiz</h3>
+            <p class="chapter-card__description">Test knowledge across all chapters</p>
+        </div>
+    `;
+    
+    return card;
 }
 
 function createChapterCard(chapter, subject, index) {
