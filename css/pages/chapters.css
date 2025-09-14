@@ -328,3 +328,37 @@
     margin-bottom: 2rem;
     max-width: 400px;
 }
+@media (max-width: 768px) {
+    .chapters-page {
+        padding-top: 4rem; /* ekkada gap increase chestundi */
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .chapters-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .page-title {
+        font-size: 1.8rem;
+        line-height: 1.3;
+    }
+
+    .page-subtitle {
+        font-size: 0.95rem;
+        line-height: 1.4;
+        margin-top: 0.5rem;
+        display: block;
+        text-align: center;
+        word-wrap: break-word;
+    }
+}
+
+@media (max-width: 480px) {
+    .chapters-page {
+        padding-top: 3.5rem; /* small screens ki koncham thakkuva */
+    }
+
+    .page-title { font-size: 1.5rem; }
+    .page-subtitle { font-size: 0.85rem; }
+}
