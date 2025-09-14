@@ -29,7 +29,11 @@ class QuizManager {
         this.updateQuizTitle(subject, chapter);
         
         // Load questions based on subject and chapter
-        this.questions = this.getQuestionsForChapter(subject, chapter);
+        if (chapter === 'complete') {
+            this.questions = this.getQuestionsForCompleteSubject(subject);
+        } else {
+            this.questions = this.getQuestionsForChapter(subject, chapter);
+        }
 
         // Initialize user answers array
         this.userAnswers = new Array(this.questions.length).fill(null);
@@ -38,10 +42,14 @@ class QuizManager {
     updateQuizTitle(subject, chapter) {
         const quizTitle = document.getElementById('quizTitle');
         const subjectName = this.getSubjectDisplayName(subject);
-        const chapterName = this.getChapterDisplayName(chapter);
         
         if (quizTitle) {
-            quizTitle.textContent = `${subjectName} - ${chapterName} Quiz`;
+            if (chapter === 'complete') {
+                quizTitle.textContent = `Complete ${subjectName} Quiz`;
+            } else {
+                const chapterName = this.getChapterDisplayName(chapter);
+                quizTitle.textContent = `${subjectName} - ${chapterName} Quiz`;
+            }
         }
     }
     
@@ -457,6 +465,255 @@ class QuizManager {
         ];
     }
 
+    getQuestionsForCompleteSubject(subject) {
+        const quizData = {
+            mathematics: {
+                algebra: [
+                    {
+                        id: 1,
+                        question: "What is the value of x in the equation 2x + 5 = 13?",
+                        options: ["3", "4", "5", "6"],
+                        correct: 1,
+                        explanation: "Solving: 2x + 5 = 13, so 2x = 8, therefore x = 4."
+                    },
+                    {
+                        id: 2,
+                        question: "What is the slope of the line y = 3x + 2?",
+                        options: ["2", "3", "5", "6"],
+                        correct: 1,
+                        explanation: "In the equation y = mx + b, m is the slope. Here m = 3."
+                    },
+                    {
+                        id: 3,
+                        question: "What is (x + 3)(x - 3) equal to?",
+                        options: ["x² - 9", "x² + 9", "x² - 6x + 9", "x² + 6x + 9"],
+                        correct: 0,
+                        explanation: "This is the difference of squares formula: (a + b)(a - b) = a² - b²."
+                    }
+                ],
+                geometry: [
+                    {
+                        id: 4,
+                        question: "What is the sum of angles in a triangle?",
+                        options: ["90°", "180°", "270°", "360°"],
+                        correct: 1,
+                        explanation: "The sum of interior angles in any triangle is always 180°."
+                    },
+                    {
+                        id: 5,
+                        question: "What is the area of a circle with radius 5?",
+                        options: ["10π", "25π", "50π", "100π"],
+                        correct: 1,
+                        explanation: "Area of circle = πr² = π(5)² = 25π."
+                    },
+                    {
+                        id: 6,
+                        question: "What is the Pythagorean theorem?",
+                        options: ["a + b = c", "a² + b² = c²", "a × b = c", "a - b = c"],
+                        correct: 1,
+                        explanation: "In a right triangle, a² + b² = c² where c is the hypotenuse."
+                    }
+                ],
+                calculus: [
+                    {
+                        id: 7,
+                        question: "What is the derivative of x²?",
+                        options: ["x", "2x", "x²", "2x²"],
+                        correct: 1,
+                        explanation: "Using the power rule: d/dx(x²) = 2x."
+                    },
+                    {
+                        id: 8,
+                        question: "What is the integral of 2x?",
+                        options: ["x²", "x² + C", "2x²", "2x² + C"],
+                        correct: 1,
+                        explanation: "∫2x dx = 2(x²/2) + C = x² + C."
+                    },
+                    {
+                        id: 9,
+                        question: "What is the limit of (x² - 1)/(x - 1) as x approaches 1?",
+                        options: ["0", "1", "2", "undefined"],
+                        correct: 2,
+                        explanation: "Factor: (x² - 1)/(x - 1) = (x + 1)(x - 1)/(x - 1) = x + 1. As x→1, this approaches 2."
+                    }
+                ]
+            },
+            science: {
+                physics: [
+                    {
+                        id: 1,
+                        question: "What is Newton's First Law of Motion?",
+                        options: ["F = ma", "An object at rest stays at rest", "Every action has an equal reaction", "Energy cannot be created or destroyed"],
+                        correct: 1,
+                        explanation: "Newton's First Law states that an object at rest stays at rest, and an object in motion stays in motion, unless acted upon by an external force."
+                    },
+                    {
+                        id: 2,
+                        question: "What is the formula for kinetic energy?",
+                        options: ["KE = mv", "KE = ½mv²", "KE = mgh", "KE = Fd"],
+                        correct: 1,
+                        explanation: "Kinetic energy is calculated as KE = ½mv², where m is mass and v is velocity."
+                    },
+                    {
+                        id: 3,
+                        question: "What is the speed of light in a vacuum?",
+                        options: ["3 × 10⁶ m/s", "3 × 10⁸ m/s", "3 × 10¹⁰ m/s", "3 × 10¹² m/s"],
+                        correct: 1,
+                        explanation: "The speed of light in a vacuum is approximately 3 × 10⁸ meters per second."
+                    }
+                ],
+                chemistry: [
+                    {
+                        id: 4,
+                        question: "What is the chemical symbol for water?",
+                        options: ["H2O", "CO2", "NaCl", "O2"],
+                        correct: 0,
+                        explanation: "Water is H2O, consisting of two hydrogen atoms and one oxygen atom."
+                    },
+                    {
+                        id: 5,
+                        question: "What is the pH of a neutral solution?",
+                        options: ["0", "7", "14", "10"],
+                        correct: 1,
+                        explanation: "A neutral solution has a pH of 7. pH below 7 is acidic, above 7 is basic."
+                    },
+                    {
+                        id: 6,
+                        question: "What is the atomic number of carbon?",
+                        options: ["6", "12", "14", "16"],
+                        correct: 0,
+                        explanation: "Carbon has an atomic number of 6, meaning it has 6 protons in its nucleus."
+                    }
+                ],
+                biology: [
+                    {
+                        id: 7,
+                        question: "What is the powerhouse of the cell?",
+                        options: ["Nucleus", "Mitochondria", "Ribosome", "Cell membrane"],
+                        correct: 1,
+                        explanation: "Mitochondria are often called the powerhouse of the cell because they produce ATP energy."
+                    },
+                    {
+                        id: 8,
+                        question: "What is the process by which plants make their own food?",
+                        options: ["Respiration", "Photosynthesis", "Digestion", "Fermentation"],
+                        correct: 1,
+                        explanation: "Photosynthesis is the process by which plants convert sunlight, water, and CO2 into glucose."
+                    },
+                    {
+                        id: 9,
+                        question: "What is the basic unit of heredity?",
+                        options: ["Cell", "Gene", "Chromosome", "DNA"],
+                        correct: 1,
+                        explanation: "A gene is the basic unit of heredity that carries genetic information."
+                    }
+                ]
+            },
+            history: {
+                ancient: [
+                    {
+                        id: 1,
+                        question: "Which ancient civilization built the pyramids?",
+                        options: ["Greeks", "Romans", "Egyptians", "Mayans"],
+                        correct: 2,
+                        explanation: "The ancient Egyptians built the pyramids as tombs for their pharaohs."
+                    },
+                    {
+                        id: 2,
+                        question: "What was the capital of the Roman Empire?",
+                        options: ["Athens", "Rome", "Constantinople", "Alexandria"],
+                        correct: 1,
+                        explanation: "Rome was the capital of the Roman Empire, located in present-day Italy."
+                    },
+                    {
+                        id: 3,
+                        question: "Which ancient Greek city-state was known for its military prowess?",
+                        options: ["Athens", "Sparta", "Corinth", "Thebes"],
+                        correct: 1,
+                        explanation: "Sparta was renowned for its military strength and warrior culture."
+                    }
+                ],
+                medieval: [
+                    {
+                        id: 4,
+                        question: "What was the feudal system?",
+                        options: ["A religious hierarchy", "A social and economic system", "A military strategy", "A legal code"],
+                        correct: 1,
+                        explanation: "The feudal system was a social and economic structure based on land ownership and loyalty."
+                    },
+                    {
+                        id: 5,
+                        question: "Who was Charlemagne?",
+                        options: ["A Viking king", "A French emperor", "A Roman general", "A Byzantine emperor"],
+                        correct: 1,
+                        explanation: "Charlemagne was a Frankish king who became the first Holy Roman Emperor."
+                    },
+                    {
+                        id: 6,
+                        question: "What was the Black Death?",
+                        options: ["A war", "A famine", "A plague", "A drought"],
+                        correct: 2,
+                        explanation: "The Black Death was a devastating plague that swept through Europe in the 14th century."
+                    }
+                ],
+                modern: [
+                    {
+                        id: 7,
+                        question: "When did World War I begin?",
+                        options: ["1912", "1914", "1916", "1918"],
+                        correct: 1,
+                        explanation: "World War I began in 1914 with the assassination of Archduke Franz Ferdinand."
+                    },
+                    {
+                        id: 8,
+                        question: "Who was the first person to walk on the moon?",
+                        options: ["Buzz Aldrin", "Neil Armstrong", "John Glenn", "Alan Shepard"],
+                        correct: 1,
+                        explanation: "Neil Armstrong was the first person to walk on the moon on July 20, 1969."
+                    },
+                    {
+                        id: 9,
+                        question: "What was the Berlin Wall?",
+                        options: ["A defensive structure", "A border wall", "A monument", "A bridge"],
+                        correct: 1,
+                        explanation: "The Berlin Wall was a barrier that divided East and West Berlin during the Cold War."
+                    }
+                ]
+            }
+        };
+        
+        // Combine questions from all chapters in the subject
+        if (quizData[subject]) {
+            const allQuestions = [];
+            let questionId = 1;
+            
+            // Get questions from all chapters
+            Object.values(quizData[subject]).forEach(chapterQuestions => {
+                chapterQuestions.forEach(question => {
+                    allQuestions.push({
+                        ...question,
+                        id: questionId++
+                    });
+                });
+            });
+            
+            // Shuffle the questions to mix chapters
+            return this.shuffleArray(allQuestions);
+        }
+        
+        // Fallback to general questions
+        return this.getQuestionsForChapter(subject, 'general');
+    }
+
+    shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    }
+
     setupEventListeners() {
         // Start quiz button
         const startBtn = document.getElementById('startQuizBtn');
@@ -504,6 +761,9 @@ class QuizManager {
         this.startTime = new Date();
         this.timeRemaining = this.timeLimit;
         
+        // Update quiz stats based on number of questions
+        this.updateQuizStats();
+        
         // Hide start screen and show question screen
         document.getElementById('quizStartScreen').style.display = 'none';
         document.getElementById('quizQuestionScreen').style.display = 'block';
@@ -516,6 +776,25 @@ class QuizManager {
         
         // Update progress
         this.updateProgress();
+    }
+
+    updateQuizStats() {
+        const totalQuestions = this.questions.length;
+        const questionCountElement = document.querySelector('.quiz-stat span');
+        if (questionCountElement) {
+            questionCountElement.textContent = `${totalQuestions} questions`;
+        }
+        
+        // Update instructions
+        const instructionsList = document.querySelector('.quiz-instructions ul');
+        if (instructionsList) {
+            instructionsList.innerHTML = `
+                <li>You have 15 minutes to complete ${totalQuestions} questions</li>
+                <li>Each question is worth ${Math.round(100 / totalQuestions)} points</li>
+                <li>You can review and change answers before submitting</li>
+                <li>Questions are randomly selected from all chapters</li>
+            `;
+        }
     }
 
     startTimer() {

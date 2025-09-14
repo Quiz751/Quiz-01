@@ -32,13 +32,33 @@
   animation: fadeInUp 0.6s ease-out forwards;
 }
 
-.subject-card:nth-child(1) { animation-delay: 0.1s; }
-.subject-card:nth-child(2) { animation-delay: 0.2s; }
-.subject-card:nth-child(3) { animation-delay: 0.3s; }
-.subject-card:nth-child(4) { animation-delay: 0.4s; }
-.subject-card:nth-child(5) { animation-delay: 0.5s; }
-.subject-card:nth-child(6) { animation-delay: 0.6s; }
-.subject-card:nth-child(7) { animation-delay: 0.7s; }
+.subject-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.subject-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.subject-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.subject-card:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.subject-card:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+.subject-card:nth-child(6) {
+  animation-delay: 0.6s;
+}
+
+.subject-card:nth-child(7) {
+  animation-delay: 0.7s;
+}
 
 .subject-card:hover {
   transform: perspective(1000px) rotateY(5deg) translateY(-10px);
@@ -73,10 +93,13 @@
 }
 
 @keyframes aiPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
     filter: drop-shadow(0 4px 8px rgba(99, 102, 241, 0.3));
   }
+
   50% {
     transform: scale(1.05);
     filter: drop-shadow(0 6px 12px rgba(99, 102, 241, 0.5));
@@ -104,7 +127,7 @@
 
 .subject-card__description {
   color: var(--text-secondary);
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-2xl);
   line-height: 1.6;
 }
 
@@ -149,48 +172,4 @@
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-secondary);
-}
-@media (max-width: 768px) {
-.subjects-grid 
-{ 
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
-}
-.subject-card 
-{
-  padding: 12px; 
-  border: 3px solid #211f87; /* border for small box effect */ 
-  border-radius: 8px; /* chinna rounded corners */
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* subtle shadow */ 
-  margin: 0; /* edge ki gap levu */
-  width: 100%; /* container full width */ 
-  box-sizing: border-box; /* padding+border correct size ki */
-} 
-.subject-card__inner
- {
-  padding: 10px; /* card internal spacing */ 
-} 
-.subject-card__title
- {
-  font-size: 1.5rem; /* small font */
-  }
-.subject-card__description
-{ 
-   font-size: 0.875rem; /* chinna text */
- } 
-  .progress-bar
-{ 
-  height: 6px; /* chinna progress bar height */
-   } 
- .btn--full
- {
-   font-size: 0.875rem; /* button size reduce */
-  padding: 8px 0; 
-  } 
-  .subjects-page .container 
-  { 
-    padding-left: 20px;
-     padding-right: 20px; 
-    }
 }
