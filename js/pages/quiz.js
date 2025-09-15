@@ -17,6 +17,11 @@ class QuizManager {
         this.loadSampleQuestions();
         this.setupEventListeners();
         this.animateQuizContainer();
+        // Hide timer and question counter UI per requirements
+        const quizInfo = document.querySelector('.quiz-info');
+        if (quizInfo) {
+            quizInfo.style.display = 'none';
+        }
     }
 
     loadSampleQuestions() {
@@ -744,13 +749,13 @@ class QuizManager {
         
         if (!prefersReducedMotion && quizContainer) {
             quizContainer.style.opacity = '0';
-            quizContainer.style.transform = 'scale(0.9) translateY(30px)';
+            quizContainer.style.transform = 'scale(0.95) translateY(20px)';
             
             setTimeout(() => {
-                quizContainer.style.transition = 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                quizContainer.style.transition = 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
                 quizContainer.style.opacity = '1';
                 quizContainer.style.transform = 'scale(1) translateY(0)';
-            }, 200);
+            }, 100);
         } else if (quizContainer) {
             quizContainer.style.opacity = '1';
             quizContainer.style.transform = 'scale(1) translateY(0)';
@@ -764,18 +769,40 @@ class QuizManager {
         // Update quiz stats based on number of questions
         this.updateQuizStats();
         
-        // Hide start screen and show question screen
-        document.getElementById('quizStartScreen').style.display = 'none';
-        document.getElementById('quizQuestionScreen').style.display = 'block';
+        // Smooth transition from start screen to question screen
+        this.transitionToQuestionScreen();
         
-        // Start timer
-        this.startTimer();
+        // Timer disabled per requirements (hidden and not used)
         
         // Load first question
         this.loadQuestion(0);
         
         // Update progress
         this.updateProgress();
+    }
+
+    transitionToQuestionScreen() {
+        const startScreen = document.getElementById('quizStartScreen');
+        const questionScreen = document.getElementById('quizQuestionScreen');
+        
+        // Fade out start screen
+        startScreen.style.transition = 'all 0.4s ease-out';
+        startScreen.style.opacity = '0';
+        startScreen.style.transform = 'translateY(-20px)';
+        
+        setTimeout(() => {
+            startScreen.style.display = 'none';
+            questionScreen.style.display = 'block';
+            questionScreen.style.opacity = '0';
+            questionScreen.style.transform = 'translateY(30px)';
+            
+            // Fade in question screen
+            setTimeout(() => {
+                questionScreen.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                questionScreen.style.opacity = '1';
+                questionScreen.style.transform = 'translateY(0)';
+            }, 100);
+        }, 400);
     }
 
     updateQuizStats() {
@@ -837,28 +864,65 @@ class QuizManager {
         this.currentQuestionIndex = index;
         const question = this.questions[index];
         
-        // Update question text
-        document.getElementById('questionText').textContent = question.question;
+        // Animate question transition
+        this.animateQuestionTransition(() => {
+            // Update question text
+            const questionTextEl = document.getElementById('questionText');
+            if (questionTextEl) {
+                questionTextEl.textContent = `${index + 1}. ${question.question}`;
+            }
+            
+            // Generate options
+            this.generateOptions(question);
+            
+            // Update navigation buttons
+            this.updateNavigationButtons();
+            
+            // Update progress
+            this.updateProgress();
+        });
+    }
+
+    animateQuestionTransition(callback) {
+        const questionCard = document.querySelector('.question-card');
+        const optionsContainer = document.getElementById('questionOptions');
         
-        // Update question counter
-        document.getElementById('currentQuestion').textContent = index + 1;
-        document.getElementById('totalQuestions').textContent = this.questions.length;
+        // Fade out current question
+        questionCard.style.transition = 'all 0.3s ease-out';
+        questionCard.style.opacity = '0.6';
+        questionCard.style.transform = 'translateX(-15px)';
         
-        // Generate options
-        this.generateOptions(question);
-        
-        // Update navigation buttons
-        this.updateNavigationButtons();
-        
-        // Update progress
-        this.updateProgress();
+        setTimeout(() => {
+            // Execute callback (update content)
+            callback();
+            
+            // Fade in new question
+            questionCard.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+            questionCard.style.opacity = '1';
+            questionCard.style.transform = 'translateX(0)';
+            
+            // Animate options entrance
+            const options = optionsContainer.querySelectorAll('.option-item');
+            options.forEach((option, index) => {
+                option.style.opacity = '0';
+                option.style.transform = 'translateY(25px)';
+                
+                setTimeout(() => {
+                    option.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                    option.style.opacity = '1';
+                    option.style.transform = 'translateY(0)';
+                }, index * 120);
+            });
+        }, 300);
     }
 
     generateOptions(question) {
         const optionsContainer = document.getElementById('questionOptions');
         optionsContainer.innerHTML = '';
         
-        question.options.forEach((option, index) => {
+        // Ensure exactly 4 options are rendered
+        const fourOptions = (question.options || []).slice(0, 4);
+        fourOptions.forEach((option, index) => {
             const optionElement = document.createElement('button');
             optionElement.className = 'option-item';
             optionElement.innerHTML = `
@@ -877,18 +941,50 @@ class QuizManager {
     }
 
     selectOption(optionIndex) {
-        // Remove previous selection
+        // Remove previous selection with animation
         const options = document.querySelectorAll('.option-item');
-        options.forEach(option => option.classList.remove('selected'));
+        options.forEach(option => {
+            option.classList.remove('selected');
+            option.style.transform = 'translateY(-3px) scale(1)';
+        });
         
-        // Add selection to clicked option
-        options[optionIndex].classList.add('selected');
+        // Add selection to clicked option with enhanced animation
+        const selectedOption = options[optionIndex];
+        selectedOption.classList.add('selected');
+        selectedOption.style.transform = 'translateY(-3px) scale(1.02)';
+        
+        // Add ripple effect
+        this.addRippleEffect(selectedOption);
         
         // Save answer
         this.userAnswers[this.currentQuestionIndex] = optionIndex;
         
         // Enable next button
         document.getElementById('nextQuestionBtn').disabled = false;
+    }
+
+    addRippleEffect(element) {
+        const ripple = document.createElement('div');
+        ripple.style.position = 'absolute';
+        ripple.style.borderRadius = '50%';
+        ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+        ripple.style.transform = 'scale(0)';
+        ripple.style.animation = 'ripple 0.6s linear';
+        ripple.style.left = '50%';
+        ripple.style.top = '50%';
+        ripple.style.width = '20px';
+        ripple.style.height = '20px';
+        ripple.style.marginLeft = '-10px';
+        ripple.style.marginTop = '-10px';
+        ripple.style.pointerEvents = 'none';
+        
+        element.style.position = 'relative';
+        element.style.overflow = 'hidden';
+        element.appendChild(ripple);
+        
+        setTimeout(() => {
+            ripple.remove();
+        }, 600);
     }
 
     updateNavigationButtons() {
@@ -913,11 +1009,7 @@ class QuizManager {
     }
 
     updateProgress() {
-        const progress = ((this.currentQuestionIndex + 1) / this.questions.length) * 100;
-        const progressFill = document.getElementById('progressFill');
-        if (progressFill) {
-            progressFill.style.width = `${progress}%`;
-        }
+        // Progress bar removed per requirements
     }
 
     previousQuestion() {
@@ -941,13 +1033,35 @@ class QuizManager {
     }
 
     showResults() {
-        // Hide question screen and show result screen
-        document.getElementById('quizQuestionScreen').style.display = 'none';
-        document.getElementById('quizResultScreen').style.display = 'block';
+        // Smooth transition from question screen to result screen
+        this.transitionToResultScreen();
         
         // Calculate results
         const results = this.calculateResults();
         this.displayResults(results);
+    }
+
+    transitionToResultScreen() {
+        const questionScreen = document.getElementById('quizQuestionScreen');
+        const resultScreen = document.getElementById('quizResultScreen');
+        
+        // Fade out question screen
+        questionScreen.style.opacity = '0';
+        questionScreen.style.transform = 'translateY(-20px)';
+        
+        setTimeout(() => {
+            questionScreen.style.display = 'none';
+            resultScreen.style.display = 'block';
+            resultScreen.style.opacity = '0';
+            resultScreen.style.transform = 'translateY(20px)';
+            
+            // Fade in result screen
+            setTimeout(() => {
+                resultScreen.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                resultScreen.style.opacity = '1';
+                resultScreen.style.transform = 'translateY(0)';
+            }, 50);
+        }, 300);
     }
 
     calculateResults() {
@@ -973,32 +1087,60 @@ class QuizManager {
     }
 
     displayResults(results) {
-        // Update result elements
-        document.getElementById('finalScore').textContent = results.score;
+        // Update result elements with animation
+        this.animateStatValue('finalScore', results.score);
         document.getElementById('correctAnswers').textContent = `${results.correct}/${results.total}`;
-        document.getElementById('percentage').textContent = `${results.percentage}%`;
+        this.animateStatValue('percentage', `${results.percentage}%`);
         document.getElementById('timeTaken').textContent = results.timeTaken;
         
         // Update result title based on performance
         const resultTitle = document.getElementById('resultTitle');
         const resultSubtitle = document.getElementById('resultSubtitle');
+        const resultIcon = document.querySelector('.result-icon svg');
         
         if (results.percentage >= 90) {
             resultTitle.textContent = 'Excellent Work!';
             resultSubtitle.textContent = 'Outstanding performance! You\'re a quiz master!';
+            resultIcon.style.color = 'var(--success)';
         } else if (results.percentage >= 80) {
             resultTitle.textContent = 'Great Job!';
             resultSubtitle.textContent = 'Well done! You have a solid understanding.';
+            resultIcon.style.color = 'var(--success)';
         } else if (results.percentage >= 70) {
             resultTitle.textContent = 'Good Effort!';
             resultSubtitle.textContent = 'Not bad! Keep practicing to improve.';
+            resultIcon.style.color = 'var(--warning)';
         } else if (results.percentage >= 60) {
             resultTitle.textContent = 'Keep Learning!';
             resultSubtitle.textContent = 'You\'re on the right track. Study more and try again.';
+            resultIcon.style.color = 'var(--warning)';
         } else {
             resultTitle.textContent = 'Try Again!';
             resultSubtitle.textContent = 'Don\'t give up! Review the material and retake the quiz.';
+            resultIcon.style.color = 'var(--danger)';
         }
+    }
+
+    animateStatValue(elementId, finalValue) {
+        const element = document.getElementById(elementId);
+        const isPercentage = typeof finalValue === 'string' && finalValue.includes('%');
+        const numericValue = isPercentage ? parseInt(finalValue) : finalValue;
+        
+        let currentValue = 0;
+        const increment = numericValue / 50;
+        const timer = setInterval(() => {
+            currentValue += increment;
+            if (currentValue >= numericValue) {
+                currentValue = numericValue;
+                clearInterval(timer);
+            }
+            
+            if (isPercentage) {
+                element.textContent = Math.round(currentValue) + '%';
+            } else {
+                element.textContent = Math.round(currentValue);
+            }
+        }, 30);
     }
 
     formatTime(seconds) {
@@ -1020,9 +1162,8 @@ class QuizManager {
             clearInterval(this.timerInterval);
         }
         
-        // Show start screen
-        document.getElementById('quizResultScreen').style.display = 'none';
-        document.getElementById('quizStartScreen').style.display = 'block';
+        // Smooth transition back to start screen
+        this.transitionToStartScreen();
         
         // Reset timer display
         const timerElement = document.getElementById('quizTimer');
@@ -1030,6 +1171,29 @@ class QuizManager {
             timerElement.textContent = '15:00';
             timerElement.style.color = 'var(--primary)';
         }
+    }
+
+    transitionToStartScreen() {
+        const resultScreen = document.getElementById('quizResultScreen');
+        const startScreen = document.getElementById('quizStartScreen');
+        
+        // Fade out result screen
+        resultScreen.style.opacity = '0';
+        resultScreen.style.transform = 'translateY(-20px)';
+        
+        setTimeout(() => {
+            resultScreen.style.display = 'none';
+            startScreen.style.display = 'block';
+            startScreen.style.opacity = '0';
+            startScreen.style.transform = 'translateY(20px)';
+            
+            // Fade in start screen
+            setTimeout(() => {
+                startScreen.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                startScreen.style.opacity = '1';
+                startScreen.style.transform = 'translateY(0)';
+            }, 50);
+        }, 300);
     }
 
     viewAnswers() {

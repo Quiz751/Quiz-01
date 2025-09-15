@@ -109,18 +109,50 @@ function setupChapterNavigation() {
         card.addEventListener('click', function(e) {
             e.preventDefault();
             
-            // Add click animation
+            // Enhanced click animation with ripple effect
+            const ripple = document.createElement('div');
+            ripple.style.position = 'absolute';
+            ripple.style.borderRadius = '50%';
+            ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+            ripple.style.transform = 'scale(0)';
+            ripple.style.animation = 'ripple 0.6s linear';
+            ripple.style.left = '50%';
+            ripple.style.top = '50%';
+            ripple.style.width = '100px';
+            ripple.style.height = '100px';
+            ripple.style.marginLeft = '-50px';
+            ripple.style.marginTop = '-50px';
+            ripple.style.pointerEvents = 'none';
+            
+            this.style.position = 'relative';
+            this.style.overflow = 'hidden';
+            this.appendChild(ripple);
+            
+            // Scale animation
             this.style.transform = 'scale(0.95)';
+            
             setTimeout(() => {
-                this.style.transform = '';
-                // Navigate to quiz page
-                window.location.href = this.href;
+                this.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    // Navigate to quiz page with smooth transition
+                    document.body.style.opacity = '0.8';
+                    document.body.style.transform = 'scale(0.98)';
+                    document.body.style.transition = 'all 0.3s ease';
+                    
+                    setTimeout(() => {
+                        window.location.href = this.href;
+                    }, 200);
+                }, 100);
             }, 150);
         });
         
-        // Add hover sound effect (optional)
+        // Enhanced hover effects
         card.addEventListener('mouseenter', function() {
-            // You can add a subtle sound effect here if desired
+            this.style.transform = 'translateY(-12px) scale(1.03)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
         });
     });
 }
