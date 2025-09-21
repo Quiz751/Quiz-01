@@ -2,6 +2,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     setupAuthTabs();
     setupPasswordToggle();
+    setupAuthSubmitHandlers();
 });
 
 function setupAuthTabs() {
@@ -58,4 +59,87 @@ function setupPasswordToggle() {
             });
         }
     });
+}
+
+function setupAuthSubmitHandlers() {
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+
+    if (loginForm) {
+        const submitBtn = loginForm.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', async () => {
+                const inputs = loginForm.querySelectorAll('input');
+                const email = (inputs[0] && inputs[0].value.trim()) || '';
+                const password = (inputs[1] && inputs[1].value) || '';
+                if (!email || !password) return;
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Signing In...';
+                try {
+                    const res = await fetch('api/routes/auth.php?action=login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({ email, password })
+                    });
+                    const data = await res.json().catch(() => ({}));
+                    if (!res.ok || data.error) {
+                        alert(data.error || 'Login failed');
+                    } else {
+                        window.location.href = 'subjects.html';
+                    }
+                } catch (e) {
+                    alert('Network error. Please try again.');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Sign In';
+                }
+            });
+        }
+    }
+
+    if (signupForm) {
+        const submitBtn = signupForm.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', async () => {
+                const inputs = signupForm.querySelectorAll('input');
+                const username = (inputs[0] && inputs[0].value.trim()) || '';
+                const email = (inputs[1] && inputs[1].value.trim()) || '';
+                const password = (inputs[2] && inputs[2].value) || '';
+                if (!username || !email || !password) return;
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Creating...';
+                try {
+                    const res = await fetch('api/routes/auth.php?action=register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({ username, email, password })
+                    });
+                    const data = await res.json().catch(() => ({}));
+                    if (!res.ok || data.error) {
+                        alert(data.error || 'Registration failed');
+                    } else {
+                        // Auto-login after signup
+                        const loginRes = await fetch('api/routes/auth.php?action=login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            credentials: 'include',
+                            body: JSON.stringify({ email, password })
+                        });
+                        if (loginRes.ok) {
+                            window.location.href = 'subjects.html';
+                        } else {
+                            window.location.href = 'auth.html';
+                        }
+                    }
+                } catch (e) {
+                    alert('Network error. Please try again.');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Create Account';
+                }
+            });
+        }
+    }
 }

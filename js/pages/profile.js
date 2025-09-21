@@ -1,109 +1,90 @@
-// Profile Page JavaScript with Animations
-document.addEventListener('DOMContentLoaded', function() {
-    // Check for reduced motion preference
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    
-    if (!prefersReducedMotion) {
-        // Animate profile cards entrance
-        animateProfileCards();
-        
-        // Animate achievement badges
-        animateAchievementBadges();
-    } else {
-        // If reduced motion is preferred, just show final state
-        showFinalState();
+document.addEventListener('DOMContentLoaded', async () => {
+    const isLoggedIn = await ensureLoggedIn();
+    if (!isLoggedIn) {
+        window.location.href = 'auth.html';
+        return;
     }
-    
-    // Setup avatar upload functionality
-    setupAvatarUpload();
+
+    loadProfileData();
+
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'quizai:lastStatsUpdate') {
+            loadProfileData();
+        }
+    });
+
+    document.getElementById('logout-button').addEventListener('click', () => {
+        fetch('api/routes/auth.php?action=logout', { method: 'POST' })
+            .then(() => window.location.href = 'auth.html');
+    });
 });
 
-function animateProfileCards() {
-    const profileCards = document.querySelectorAll('.profile-card, .achievements-card');
-    
-    profileCards.forEach((card, index) => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(30px) scale(0.95)';
-        
-        setTimeout(() => {
-            card.style.transition = 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0) scale(1)';
-        }, 200 + (index * 150));
-    });
-}
-
-function animateAchievementBadges() {
-    const achievementBadges = document.querySelectorAll('.achievement-badge');
-    
-    achievementBadges.forEach((badge, index) => {
-        badge.style.opacity = '0';
-        badge.style.transform = 'translateX(-20px) scale(0.8)';
-        
-        setTimeout(() => {
-            badge.style.transition = 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
-            badge.style.opacity = '1';
-            badge.style.transform = 'translateX(0) scale(1)';
-        }, 600 + (index * 100));
-    });
-}
-
-function setupAvatarUpload() {
-    const avatarUpload = document.getElementById('avatarUpload');
-    
-    if (avatarUpload) {
-        avatarUpload.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    // Create a smooth transition for avatar change
-                    const avatarContainer = document.querySelector('.profile-avatar-container');
-                    const currentAvatar = avatarContainer.querySelector('.profile-avatar, .profile-avatar--default');
-                    
-                    if (currentAvatar) {
-                        currentAvatar.style.transition = 'all 0.3s ease';
-                        currentAvatar.style.transform = 'scale(0.8)';
-                        currentAvatar.style.opacity = '0.5';
-                        
-                        setTimeout(() => {
-                            // Replace with new avatar
-                            const newAvatar = document.createElement('img');
-                            newAvatar.src = event.target.result;
-                            newAvatar.alt = 'Profile';
-                            newAvatar.className = 'profile-avatar';
-                            newAvatar.style.transition = 'all 0.3s ease';
-                            newAvatar.style.transform = 'scale(0.8)';
-                            newAvatar.style.opacity = '0';
-                            
-                            currentAvatar.replaceWith(newAvatar);
-                            
-                            // Animate in the new avatar
-                            setTimeout(() => {
-                                newAvatar.style.transform = 'scale(1)';
-                                newAvatar.style.opacity = '1';
-                            }, 50);
-                        }, 300);
-                    }
-                };
-                reader.readAsDataURL(file);
+function loadProfileData() {
+    fetch('api/routes/profile.php')
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+            if (data.error) {
+                console.error(data.error);
+                return;
             }
+            populateProfile(data);
+        })
+        .catch(err => console.error('Error fetching profile:', err));
+}
+
+function populateProfile(data) {
+    const user = data.user;
+    const stats = data.stats;
+
+    // Header
+    document.getElementById('username').textContent = user.username;
+    document.getElementById('level').textContent = `Level ${stats.level}`;
+    const progressBar = document.getElementById('progress-bar');
+    const progressLabel = document.getElementById('progress-label');
+    progressBar.style.width = `${stats.progress}%;`;
+    progressLabel.textContent = `${stats.progress}% to next level`;
+
+    const profileImage = document.getElementById('profileImage');
+    if (user.profile_image) {
+        profileImage.innerHTML = `<img src="data:image/png;base64,${user.profile_image}" alt="Profile Image" class="profile-avatar">`;
+    } else {
+        document.getElementById('avatar-initials').textContent = (user.username || 'U')[0].toUpperCase();
+    }
+
+    // Details
+    document.getElementById('fullName').textContent = user.username;
+    document.getElementById('email').textContent = user.email;
+    document.getElementById('memberSince').textContent = new Date(user.created_at).toLocaleDateString();
+    document.getElementById('learningFocus').textContent = data.learning_focus || 'Not set';
+
+    // Achievements
+    const achievementsContainer = document.getElementById('achievements');
+    achievementsContainer.innerHTML = '';
+    if (data.achievements && data.achievements.length > 0) {
+        data.achievements.forEach(ach => {
+            const achievement = document.createElement('div');
+            achievement.className = 'achievement-badge';
+            achievement.innerHTML = `
+                <div class="achievement-icon">🏆</div>
+                <div class="achievement-content">
+                    <h4>${ach.achievement_name}</h4>
+                    <p>Achieved on ${new Date(ach.achieved_at).toLocaleDateString()}</p>
+                </div>
+            `;
+            achievementsContainer.appendChild(achievement);
         });
+    } else {
+        achievementsContainer.innerHTML = '<p>No achievements yet.</p>';
     }
 }
 
-function showFinalState() {
-    // For users who prefer reduced motion, just show the final state immediately
-    const profileCards = document.querySelectorAll('.profile-card, .achievements-card');
-    const achievementBadges = document.querySelectorAll('.achievement-badge');
-    
-    profileCards.forEach(card => {
-        card.style.opacity = '1';
-        card.style.transform = 'translateY(0) scale(1)';
-    });
-    
-    achievementBadges.forEach(badge => {
-        badge.style.opacity = '1';
-        badge.style.transform = 'translateX(0) scale(1)';
-    });
+async function ensureLoggedIn() {
+    try {
+        const res = await fetch('api/routes/auth.php?action=check_session');
+        const data = await res.json();
+        return data.logged_in === true;
+    } catch (error) {
+        return false;
+    }
 }

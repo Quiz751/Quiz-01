@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initTheme() {
-    // Get theme from localStorage or default to dark
-    const savedTheme = localStorage.getItem('theme') || 'dark';
+    // Get theme from localStorage or default to light (original design)
+    const savedTheme = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
 }
 

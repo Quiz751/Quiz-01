@@ -1,25 +1,119 @@
 // Leaderboard Page JavaScript with Animations
 document.addEventListener('DOMContentLoaded', function() {
-    // Check for reduced motion preference
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    
-    if (!prefersReducedMotion) {
-        // Animate leaderboard stats
-        animateLeaderboardStats();
-        
-        // Animate podium XP values
-        animatePodiumXP();
-        
-        // Add staggered entrance for podium places
-        animatePodiumEntrance();
-    } else {
-        // If reduced motion is preferred, just show final values
-        showFinalValues();
-    }
-    
-    // Setup filter functionality
     setupFilters();
+    loadLeaderboard('weekly');
+    // Live refresh on stats update
+    window.addEventListener('storage', async (e) => {
+        if (e && e.key === 'quizai:lastStatsUpdate') {
+            const activeFilter = document.querySelector('.filter-btn--active').dataset.filter;
+            loadLeaderboard(activeFilter);
+        }
+    });
 });
+
+async function loadLeaderboard(filter = 'weekly') {
+    try {
+        const res = await fetch(`api/routes/leaderboard.php?filter=${filter}`);
+        const data = await res.json();
+        console.log(data);
+        if (!data) return;
+
+        if (data.global_stats) {
+            updateGlobalStats(data.global_stats);
+        }
+
+        if (Array.isArray(data.leaderboard)) {
+            renderPodium(data.leaderboard.slice(0, 3));
+            renderRankings(data.leaderboard.slice(3));
+        }
+
+    } catch (e) {
+        // keep static content if API fails
+    }
+}
+
+function updateGlobalStats(stats) {
+    const statValues = document.querySelectorAll('.leaderboard-stats .stat-card__value');
+    if (statValues.length >= 3) {
+        statValues[0].textContent = stats.top_score || 0;
+        statValues[1].textContent = stats.active_players || 0;
+        statValues[2].textContent = stats.day_streak_record || 0;
+    }
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!prefersReducedMotion) {
+        animateLeaderboardStats();
+    }
+}
+
+function renderPodium(podiumData) {
+    const podium = document.querySelector('.podium');
+    if (!podium) return;
+    podium.innerHTML = '';
+
+    const places = [1, 0, 2]; // Order to render: 2nd, 1st, 3rd
+    const medals = ['🥇', '🥈', '🥉'];
+
+    places.forEach(index => {
+        if (podiumData[index]) {
+            const user = podiumData[index];
+            const place = index + 1;
+            const podiumPlace = document.createElement('div');
+            podiumPlace.className = `podium__place podium__place--${place}`;
+            podiumPlace.innerHTML = `
+                <div class="podium__glow"></div>
+                <div class="podium__avatar"><span>${(user.username || 'U').slice(0,2).toUpperCase()}</span></div>
+                <h3 class="podium__name">${user.username || 'User'}</h3>
+                <p class="podium__xp">${user.xp ?? 0} XP</p>
+                <div class="podium__medal">${medals[index]}</div>
+            `;
+            podium.appendChild(podiumPlace);
+        }
+    });
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!prefersReducedMotion) {
+        animatePodiumEntrance();
+        animatePodiumXP();
+    }
+}
+
+function renderRankings(rankingsData) {
+    const list = document.querySelector('.rankings-list');
+    if (!list) return;
+    list.innerHTML = '';
+
+    rankingsData.forEach((row, idx) => {
+        const item = document.createElement('div');
+        item.className = 'ranking-item';
+        item.innerHTML = `
+            <div class="ranking-item__position"><span>${idx + 4}</span></div>
+            <div class="ranking-item__avatar"><span>${(row.username || 'U').slice(0,2).toUpperCase()}</span></div>
+            <div class="ranking-item__info">
+                <h4>${row.username || 'User'}</h4>
+                <p>XP</p>
+            </div>
+            <div class="ranking-item__stats"><span class="ranking-item__xp">${row.xp ?? 0} XP</span></div>
+        `;
+        list.appendChild(item);
+    });
+}
+
+function setupFilters() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            filterButtons.forEach(btn => btn.classList.remove('filter-btn--active'));
+            button.classList.add('filter-btn--active');
+            button.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+            }, 150);
+            loadLeaderboard(button.dataset.filter);
+        });
+    });
+}
 
 function animateLeaderboardStats() {
     const statValues = document.querySelectorAll('.leaderboard-stats .stat-card__value');
@@ -78,7 +172,6 @@ function animateNumber(element, start, end, duration, hasComma = false, hasHash 
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
         
-        // Ease-out function
         const easeOut = 1 - Math.pow(1 - progress, 3);
         const current = Math.floor(start + (end - start) * easeOut);
         
@@ -98,47 +191,4 @@ function animateNumber(element, start, end, duration, hasComma = false, hasHash 
     }
     
     requestAnimationFrame(updateNumber);
-}
-
-function setupFilters() {
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    
-    filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Remove active class from all buttons
-            filterButtons.forEach(btn => btn.classList.remove('filter-btn--active'));
-            
-            // Add active class to clicked button
-            button.classList.add('filter-btn--active');
-            
-            // Add a subtle animation to the button
-            button.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                button.style.transform = 'scale(1)';
-            }, 150);
-        });
-    });
-}
-
-function showFinalValues() {
-    // For users who prefer reduced motion, just show the final values immediately
-    const statValues = document.querySelectorAll('.leaderboard-stats .stat-card__value');
-    const podiumXP = document.querySelectorAll('.podium__xp');
-    const podiumPlaces = document.querySelectorAll('.podium__place');
-    
-    // Show final stat values
-    statValues.forEach(element => {
-        // Values are already correct in HTML, no need to change
-    });
-    
-    // Show final podium XP values
-    podiumXP.forEach(element => {
-        // Values are already correct in HTML, no need to change
-    });
-    
-    // Show podium places
-    podiumPlaces.forEach(place => {
-        place.style.opacity = '1';
-        place.style.transform = 'translateY(0) scale(1)';
-    });
 }

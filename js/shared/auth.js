@@ -1,6 +1,7 @@
 import { activeAuthTab, setActiveAuthTab, showPassword, setShowPassword } from '../state.js';
 import { createIcon } from '../utils.js';
 
+
 export function renderAuthPage() {
   const mainContent = document.getElementById('main-content');
   mainContent.innerHTML = `

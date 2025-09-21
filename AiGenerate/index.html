@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Quiz Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <div class="header-icon">🧠</div>
+                <h1>AI Quiz Crafter</h1>
+                <p>Instantly generate a custom quiz on any subject and topic.</p>
+            </div>
+            <form id="subjectForm">
+                <div class="form-group">
+                    <label for="subject">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="icon">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                        Subject Name
+                    </label>
+                    <input type="text" id="subject" name="subject" placeholder="e.g., World History" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="topic">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="icon">
+                            <path d="m9 9 7.07 7.07M2 12h20"></path>
+                            <path
+                                d="M5.636 5.636 2 12l3.636 6.364c3.636 6.364 11.09 6.364 14.728 0L22 12l-3.636-6.364c-3.636-6.364-11.09-6.364-14.728 0z">
+                            </path>
+                        </svg>
+                        Topic
+                    </label>
+                    <input type="text" id="topic" name="topic" placeholder="e.g., The Roman Empire" required>
+                </div>
+
+                <button type="submit">
+                    <span class="btn-text">Generate Quiz</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="icon arrow">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            </form>
+            <div id="questionsContainer"></div>
+        </div>
+    </div>
+
+    <div class="loader-overlay" id="loaderOverlay">
+        <div class="loader-content">
+            <div class="loader-icon">🧠</div>
+            <p class="loader-text">Our AI is thinking...</p>
+            <p class="loader-subtext">Crafting your custom quiz questions.</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

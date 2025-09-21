@@ -1,177 +1,125 @@
 // Chapters Page JavaScript
-document.addEventListener('DOMContentLoaded', function() {
-    // Get subject from URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const subject = urlParams.get('subject') || 'mathematics';
-    
-    // Demo data for subjects and their chapters
-    const subjectsData = {
-        mathematics: {
-            name: 'Mathematics',
-            chapters: [
-                { name: 'Algebra', description: 'Basic algebraic concepts and equations' },
-                { name: 'Geometry', description: 'Shapes, angles, and spatial relationships' },
-                { name: 'Calculus', description: 'Derivatives, integrals, and limits' }
-            ]
-        },
-        science: {
-            name: 'Science',
-            chapters: [
-                { name: 'Physics', description: 'Motion, forces, and energy' },
-                { name: 'Chemistry', description: 'Elements, compounds, and reactions' },
-                { name: 'Biology', description: 'Living organisms and life processes' }
-            ]
-        },
-        history: {
-            name: 'History',
-            chapters: [
-                { name: 'Ancient', description: 'Ancient civilizations and early history' },
-                { name: 'Medieval', description: 'Middle Ages and medieval period' },
-                { name: 'Modern', description: 'Modern history and contemporary events' }
-            ]
-        }
-    };
-    
-    // Show loading state first
-    showLoadingState();
-    
-    // Load chapters for the selected subject with a slight delay for better UX
-    setTimeout(() => {
-        loadChapters(subject, subjectsData);
-        setupChapterNavigation();
-    }, 500);
-});
 
-function loadChapters(subject, subjectsData) {
-    const subjectData = subjectsData[subject];
-    
-    if (!subjectData) {
-        // Fallback to mathematics if subject not found
-        loadChapters('mathematics', subjectsData);
+document.addEventListener('DOMContentLoaded', function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const subjectId = urlParams.get('subject_id');
+
+    showLoadingState();
+
+    if (!subjectId) {
+        showErrorState('Missing subject. Please go back and select a subject.');
         return;
     }
-    
-    // Update page title and breadcrumb
-    document.getElementById('subjectName').textContent = subjectData.name;
-    document.getElementById('pageTitle').textContent = `${subjectData.name} Chapters`;
-    
-    // Generate chapter cards
-    const chaptersGrid = document.getElementById('chaptersGrid');
-    chaptersGrid.innerHTML = '';
-    
-    // Add the Complete Subject Quiz card first
-    const completeSubjectCard = createCompleteSubjectCard(subject);
-    chaptersGrid.appendChild(completeSubjectCard);
-    
-    subjectData.chapters.forEach((chapter, index) => {
-        const chapterCard = createChapterCard(chapter, subject, index);
-        chaptersGrid.appendChild(chapterCard);
+
+    loadChapters(subjectId);
+
+    // Handle browser back button
+    window.addEventListener('popstate', function () {
+        window.location.reload();
     });
-}
 
-function createCompleteSubjectCard(subject) {
-    const card = document.createElement('a');
-    card.className = 'chapter-card complete-subject-card';
-    card.href = `quiz.html?subject=${subject}&chapter=complete`;
-    card.setAttribute('data-chapter', 'complete');
-    
-    card.innerHTML = `
-        <div class="chapter-card__content">
-            <h3 class="chapter-card__title">Complete Subject Quiz</h3>
-            <p class="chapter-card__description">Test knowledge across all chapters</p>
-        </div>
-    `;
-    
-    return card;
-}
+    // Keyboard navigation
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            window.location.href = 'subjects.html';
+        }
+    });
+});
 
-function createChapterCard(chapter, subject, index) {
-    const card = document.createElement('a');
-    card.className = 'chapter-card';
-    card.href = `quiz.html?subject=${subject}&chapter=${chapter.name.toLowerCase()}`;
-    card.setAttribute('data-chapter', chapter.name.toLowerCase());
-    
-    card.innerHTML = `
-        <div class="chapter-card__content">
-            <h3 class="chapter-card__title">${chapter.name}</h3>
-            <p class="chapter-card__description">${chapter.description}</p>
-        </div>
-    `;
-    
-    return card;
-}
+async function loadChapters(subjectId) {
+    try {
+        const res = await fetch(`api/routes/chapters.php?subject_id=${encodeURIComponent(subjectId)}`);
+        if (!res.ok) throw new Error('Failed to load chapters');
+        const data = await res.json();
+        console.log(data);
 
-function setupChapterNavigation() {
-    // Add smooth transition effects
-    const chapterCards = document.querySelectorAll('.chapter-card');
-    
-    chapterCards.forEach(card => {
-        card.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Enhanced click animation with ripple effect
-            const ripple = document.createElement('div');
-            ripple.style.position = 'absolute';
-            ripple.style.borderRadius = '50%';
-            ripple.style.background = 'rgba(255, 255, 255, 0.6)';
-            ripple.style.transform = 'scale(0)';
-            ripple.style.animation = 'ripple 0.6s linear';
-            ripple.style.left = '50%';
-            ripple.style.top = '50%';
-            ripple.style.width = '100px';
-            ripple.style.height = '100px';
-            ripple.style.marginLeft = '-50px';
-            ripple.style.marginTop = '-50px';
-            ripple.style.pointerEvents = 'none';
-            
-            this.style.position = 'relative';
-            this.style.overflow = 'hidden';
-            this.appendChild(ripple);
-            
-            // Scale animation
-            this.style.transform = 'scale(0.95)';
-            
-            setTimeout(() => {
-                this.style.transform = 'scale(1.05)';
+        if (!data || !Array.isArray(data.chapters) || data.chapters.length === 0) {
+            showErrorState('No chapters found for this subject.');
+            return;
+        }
+
+        // Update page title and breadcrumb
+        document.getElementById('subjectName').textContent = data.subject_name;
+        document.getElementById('pageTitle').textContent = `${data.subject_name} Chapters`;
+
+        const chaptersGrid = document.getElementById('chaptersGrid');
+        chaptersGrid.innerHTML = '';
+
+        // Add the Complete Subject Quiz card first (linking to complete mode)
+        const completeSubjectCard = document.createElement('a');
+        completeSubjectCard.className = 'chapter-card complete-subject-card';
+        completeSubjectCard.href = `quiz.html?subject_id=${encodeURIComponent(subjectId)}&mode=complete`;
+        completeSubjectCard.setAttribute('data-chapter', 'complete');
+        completeSubjectCard.innerHTML = `
+            <div class="chapter-card__content">
+                <h3 class="chapter-card__title">Complete Subject Quiz</h3>
+                <p class="chapter-card__description">Test knowledge across all chapters</p>
+            </div>
+        `;
+        chaptersGrid.appendChild(completeSubjectCard);
+
+        data.chapters.forEach((chapter) => {
+            const card = document.createElement('a');
+            card.className = 'chapter-card';
+            // Pass both chapter_id and subject_id to the quiz page
+            card.href = `quiz.html?chapter_id=${encodeURIComponent(chapter.id)}&subject_id=${encodeURIComponent(subjectId)}`;
+            card.setAttribute('data-chapter', String(chapter.id));
+            card.innerHTML = `
+                <div class="chapter-card__content">
+                    <h3 class="chapter-card__title">${chapter.title}</h3>
+                    <p class="chapter-card__description">Chapter ${chapter.order_index ?? ''}</p>
+                </div>
+            `;
+
+            // Interactions
+            card.addEventListener('click', function (e) {
+                e.preventDefault();
+                const ripple = document.createElement('div');
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.animation = 'ripple 0.6s linear';
+                ripple.style.left = '50%';
+                ripple.style.top = '50%';
+                ripple.style.width = '100px';
+                ripple.style.height = '100px';
+                ripple.style.marginLeft = '-50px';
+                ripple.style.marginTop = '-50px';
+                ripple.style.pointerEvents = 'none';
+
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+
+                this.style.transform = 'scale(0.95)';
                 setTimeout(() => {
-                    // Navigate to quiz page with smooth transition
-                    document.body.style.opacity = '0.8';
-                    document.body.style.transform = 'scale(0.98)';
-                    document.body.style.transition = 'all 0.3s ease';
-                    
+                    this.style.transform = 'scale(1.05)';
                     setTimeout(() => {
-                        window.location.href = this.href;
-                    }, 200);
-                }, 100);
-            }, 150);
+                        document.body.style.opacity = '0.8';
+                        document.body.style.transform = 'scale(0.98)';
+                        document.body.style.transition = 'all 0.3s ease';
+                        setTimeout(() => {
+                            window.location.href = this.href;
+                        }, 200);
+                    }, 100);
+                }, 150);
+            });
+
+            card.addEventListener('mouseenter', function () {
+                this.style.transform = 'translateY(-12px) scale(1.03)';
+            });
+            card.addEventListener('mouseleave', function () {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+
+            chaptersGrid.appendChild(card);
         });
-        
-        // Enhanced hover effects
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-12px) scale(1.03)';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0) scale(1)';
-        });
-    });
+    } catch (err) {
+        showErrorState('Failed to load chapters.');
+    }
 }
 
-// Handle browser back button
-window.addEventListener('popstate', function() {
-    // Reload the page to handle back navigation properly
-    window.location.reload();
-});
-
-// Add keyboard navigation support
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        // Go back to subjects page
-        window.location.href = 'subjects.html';
-    }
-});
-
-// Add loading animation
 function showLoadingState() {
     const chaptersGrid = document.getElementById('chaptersGrid');
     chaptersGrid.innerHTML = `
@@ -186,7 +134,6 @@ function showLoadingState() {
     `;
 }
 
-// Add error handling
 function showErrorState(message) {
     const chaptersGrid = document.getElementById('chaptersGrid');
     chaptersGrid.innerHTML = `

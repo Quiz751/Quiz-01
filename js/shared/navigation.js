@@ -1,6 +1,7 @@
 // Shared Navigation JavaScript
 document.addEventListener('DOMContentLoaded', function() {
     initNavigation();
+    checkSessionAndToggleCTA();
 });
 
 function initNavigation() {
@@ -35,4 +36,17 @@ function initNavigation() {
             }
         });
     }
+}
+
+async function checkSessionAndToggleCTA() {
+    try {
+        const res = await fetch('api/routes/auth.php?action=check_session', { credentials: 'include' });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data && data.logged_in) {
+            const btn = document.querySelector('.nav .btn.btn--primary');
+            if (btn) {
+                btn.style.display = 'none';
+            }
+        }
+    } catch (_) {}
 }
