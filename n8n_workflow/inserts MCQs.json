@@ -1,0 +1,220 @@
+{
+  "name": "inserts MCQs",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "output",
+              "type": "any"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -48,
+        80
+      ],
+      "id": "b574880d-169d-4bbd-9ab4-c6d54e27b3e9",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output.mcqs",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        176,
+        80
+      ],
+      "id": "ae19dfa6-ea7d-46de-a22e-10960830c8ef",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        400,
+        80
+      ],
+      "id": "6db5affc-6325-42c8-a0a2-0aa8a204d8fe",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        1072,
+        80
+      ],
+      "id": "1cf30c46-e988-4c12-8ce6-7ecd91c92c2c"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        848,
+        0
+      ],
+      "id": "679e95bd-811e-45b6-94ab-5233d8d0370c",
+      "name": "Wait",
+      "webhookId": "23726425-9ebd-45cc-b78a-a5d3f3868300"
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "value": "questions",
+          "mode": "list",
+          "cachedResultName": "questions"
+        },
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "question_text",
+              "value": "={{ $('Split Out').item.json.question }}"
+            },
+            {
+              "column": "option_a",
+              "value": "={{ $('Split Out').item.json.options.a }}"
+            },
+            {
+              "column": "option_b",
+              "value": "={{ $('Split Out').item.json.options.b }}"
+            },
+            {
+              "column": "option_c",
+              "value": "={{ $('Split Out').item.json.options.c }}"
+            },
+            {
+              "column": "option_d",
+              "value": "={{ $('Split Out').item.json.options.d }}"
+            },
+            {
+              "column": "correct_option",
+              "value": "=option_{{ $('Split Out').item.json.correct_answer }}"
+            },
+            {
+              "column": "explanation",
+              "value": "={{ $('Split Out').item.json.explanation }}"
+            },
+            {
+              "column": "topic_id",
+              "value": "={{ $('When Executed by Another Workflow').item.json.output.topic_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        624,
+        0
+      ],
+      "id": "ebc2a2f1-2208-42f2-b128-4b678d7e0ab1",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "mySql": {
+          "id": "83aoUVpNHdAnbsCx",
+          "name": "MySQL account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4a5a54bc-6e4b-47b5-b3f7-11e8ef3185ec",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5ec010c60cb3f57afa858e6b48afed0fb9a2d9e86dc9efaa7312c463df0a0d7d"
+  },
+  "id": "xPv8BZGcF1OgwxHy",
+  "tags": []
+}
