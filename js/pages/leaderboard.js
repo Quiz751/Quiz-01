@@ -1,19 +1,17 @@
 // Leaderboard Page JavaScript with Animations
 document.addEventListener('DOMContentLoaded', function() {
-    setupFilters();
-    loadLeaderboard('weekly');
+    loadLeaderboard();
     // Live refresh on stats update
     window.addEventListener('storage', async (e) => {
         if (e && e.key === 'quizai:lastStatsUpdate') {
-            const activeFilter = document.querySelector('.filter-btn--active').dataset.filter;
-            loadLeaderboard(activeFilter);
+            loadLeaderboard();
         }
     });
 });
 
-async function loadLeaderboard(filter = 'weekly') {
+async function loadLeaderboard() {
     try {
-        const res = await fetch(`api/routes/leaderboard.php?filter=${filter}`);
+        const res = await fetch(`api/routes/leaderboard.php`);
         const data = await res.json();
         console.log(data);
         if (!data) return;

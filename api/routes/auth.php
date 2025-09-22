@@ -53,6 +53,13 @@ function handle_login($conn) {
         send_response(['error' => 'Invalid credentials'], 401);
     }
     $_SESSION['user_id'] = $user_id;
+
+    // Add user activity log for login
+    $activity_stmt = $conn->prepare("INSERT INTO user_activity (user_id, activity_type) VALUES (?, 'login')");
+    $activity_stmt->bind_param('i', $user_id);
+    $activity_stmt->execute();
+    $activity_stmt->close();
+
     send_response(['success' => true]);
 }
 
