@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 22, 2025 at 11:23 AM
+-- Generation Time: Sep 23, 2025 at 04:43 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -401,7 +401,19 @@ INSERT INTO `questions` (`id`, `topic_id`, `question_text`, `option_a`, `option_
 (281, 217, 'Which of the following is NOT a standard Link Layer PDU type specifically for BLE advertising packets as defined in the Bluetooth Core Specification?', 'ADV_IND', 'ADV_NONCONN_IND', 'ADV_SCAN_IND', 'ADV_CONN_DIRECT', 'option_d', 'The standard PDU types for advertising include ADV_IND, ADV_NONCONN_IND, ADV_SCAN_IND, and ADV_DIRECT_IND. ADV_CONN_DIRECT is not a recognized name for an advertising PDU in the BLE specification.', '2025-09-15 16:28:30'),
 (282, 217, 'What is the typical limit on the number of simultaneous slave devices that a single BLE master (central) can connect to?', '1', '7', 'The BLE specification sets no limit', 'Varies by implementation, commonly 3-10', 'option_d', 'The BLE specification does not impose an architectural limit on the number of concurrent connections for a Central device. However, practical constraints due to hardware resources and software stack capabilities typically limit this to a range like 3 to 10 connections.', '2025-09-15 16:28:32'),
 (283, 217, 'During active scanning, what additional packet does a BLE scanner send to an advertiser compared to passive scanning?', 'ADV_IND', 'SCAN_RSP', 'SCAN_REQ', 'CONNECT_REQ', 'option_c', 'In active scanning, after receiving an advertising packet (like ADV_IND or ADV_SCAN_IND), the scanner sends a SCAN_REQ PDU. The advertiser then responds with a SCAN_RSP containing additional device information. Passive scanning only listens.', '2025-09-15 16:28:34'),
-(284, 217, 'Which characteristic property must be enabled for a GATT client to receive automatic, server-initiated updates of a characteristic\'s value without actively polling?', 'Read', 'Write', 'Notify', 'Authenticate', 'option_c', 'The \'Notify\' property allows a GATT server to send unacknowledged data packets to subscribed clients whenever the characteristic\'s value changes. This enables real-time updates without the client needing to repeatedly request the value.', '2025-09-15 16:28:36');
+(284, 217, 'Which characteristic property must be enabled for a GATT client to receive automatic, server-initiated updates of a characteristic\'s value without actively polling?', 'Read', 'Write', 'Notify', 'Authenticate', 'option_c', 'The \'Notify\' property allows a GATT server to send unacknowledged data packets to subscribed clients whenever the characteristic\'s value changes. This enables real-time updates without the client needing to repeatedly request the value.', '2025-09-15 16:28:36'),
+(285, 218, 'What does CBOR primarily aim to provide in data serialization?', 'Human-readable text', 'Concise binary representation', 'Extensive schema validation', 'Cryptographic hashing', 'option_b', 'CBOR (Concise Binary Object Representation) is designed for efficient, small-sized binary serialization of data, making it suitable for constrained environments and optimizing bandwidth.', '2025-09-22 11:52:50'),
+(286, 218, 'Which of the following is a fundamental reason for conducting efficiency testing on CBOR?', 'To ensure aesthetic appeal of data', 'To verify compliance with human readability standards', 'To evaluate performance metrics like size and speed', 'To convert data into XML format', 'option_c', 'Efficiency testing for CBOR focuses on quantitative performance metrics such as data size, encoding/decoding speed, and memory footprint to assess its suitability for target applications.', '2025-09-22 11:52:51'),
+(287, 218, 'In the context of \"Concise Binary Object Representation,\" what does \"Concise\" primarily refer to?', 'Ease of reading by humans', 'Compactness of the serialized data', 'Simplicity of the specification document', 'Minimal number of data types supported', 'option_b', 'The term \"Concise\" in CBOR emphasizes its design goal of producing smaller serialized data sizes compared to text-based formats, thus improving bandwidth and storage efficiency.', '2025-09-22 11:52:52'),
+(288, 218, 'When comparing CBOR to JSON for data transmission over a low-bandwidth network, which efficiency metric is CBOR most likely to optimize significantly?', 'Developer debugging time', 'Data security through encryption', 'Network bandwidth utilization', 'Server-side processing power for complex queries', 'option_c', 'CBOR\'s binary nature typically results in smaller message sizes than JSON, directly reducing the amount of data transmitted and thus optimizing network bandwidth utilization, especially in constrained environments.', '2025-09-22 11:52:53'),
+(289, 218, 'For Internet of Things (IoT) devices with limited processing power and memory, CBOR\'s efficiency testing often prioritizes which aspects?', 'Extensive metadata storage', 'High human readability and easy editing', 'Low CPU cycles for encoding/decoding and minimal memory footprint', 'Compatibility with all legacy XML parsers', 'option_c', 'In IoT contexts, efficiency for CBOR means minimizing the computational resources (CPU, memory) required for serialization and deserialization, enabling operation on resource-constrained devices.', '2025-09-22 11:52:54'),
+(290, 218, 'How does CBOR typically achieve smaller serialized data sizes compared to formats like JSON, contributing to its efficiency?', 'By omitting all field names', 'By compressing data using standard algorithms before serialization', 'By using a compact binary encoding for data types and values', 'By requiring a predefined schema for all data', 'option_c', 'CBOR uses a direct binary representation for various data types and values, avoiding the overhead of text-based encoding like quoting strings or representing numbers as digit sequences.', '2025-09-22 11:52:55'),
+(291, 218, 'A critical aspect of CBOR efficiency testing for embedded systems involves measuring:', 'The aesthetic quality of the data structure', 'The time taken for human parsing of the data', 'The power consumption associated with encoding/decoding operations', 'The number of comments allowed in the data', 'option_c', 'For embedded systems, power consumption is a crucial efficiency metric. Less CPU and memory usage during CBOR operations directly translates to lower power consumption, extending battery life.', '2025-09-22 11:52:56'),
+(292, 218, 'In CBOR efficiency testing, what challenge might arise when comparing it against schema-defined binary formats (e.g., Protocol Buffers) concerning data structure evolution?', 'CBOR\'s dynamic typing makes schema changes impossible', 'Schema-defined formats inherently adapt better to changes without re-compilation', 'CBOR\'s schema-less nature might require application-level logic to handle evolving data fields, impacting flexibility', 'Protocol Buffers always yield larger sizes due to schema inclusion', 'option_c', 'While CBOR is schema-less and flexible, evolving data structures might require more complex application-level handling to interpret new or missing fields, which could affect overall efficiency or development effort compared to schema-enforced formats that manage evolution more explicitly.', '2025-09-22 11:52:57'),
+(293, 218, 'Which factor is LEAST likely to be a primary focus during CBOR efficiency testing for a real-time critical system?', 'Deterministic encoding/decoding latency', 'Memory allocation predictability', 'Maximum achievable data compression ratio for archival storage', 'Minimal CPU instruction cycles per operation', 'option_c', 'For real-time critical systems, predictability, speed, and resource usage are paramount. Maximum compression for archival storage is usually a secondary concern for real-time operations, as it often involves higher computational overhead.', '2025-09-22 11:52:58'),
+(294, 218, 'Consider a scenario where an application frequently serializes and deserializes small, repetitive data packets using CBOR. Which specific optimization technique within the CBOR specification or implementation would be most impactful for efficiency in this case?', 'Leveraging indefinite-length items for streaming', 'Utilizing CBOR tags for semantic meaning', 'Employing integer data types efficiently for small numbers', 'Encrypting the entire CBOR payload', 'option_c', 'For small, repetitive data packets, particularly those involving numerical data, CBOR\'s highly efficient representation of integers significantly reduces payload size and processing time, making it a critical optimization for overall efficiency.', '2025-09-22 11:52:59'),
+(295, 218, 'A developer is conducting CBOR efficiency testing for a new message format in an industrial control system. They observe higher than expected encoding times for certain complex nested maps. What is a probable cause for this inefficiency specific to CBOR implementation?', 'The use of standard ASCII characters in string keys', 'The inherent overhead of CBOR\'s binary representation', 'Excessive dynamic memory allocations and deallocations during deep recursion for nested structures', 'Lack of a predefined schema for the map structure', 'option_c', 'Deeply nested structures can lead to increased dynamic memory allocations and recursive calls during encoding/decoding, potentially impacting performance and increasing encoding times if the CBOR implementation is not optimized for memory reuse.', '2025-09-22 11:53:00'),
+(296, 218, 'What unique aspect of CBOR\'s design, when leveraged correctly, can contribute to efficiency gains beyond just data size for specific applications?', 'Its direct compatibility with XML', 'The ability to include self-describing type information via tags, reducing out-of-band metadata', 'Its reliance on human-readable keywords for all data elements', 'Automatic encryption of all serialized data', 'option_b', 'CBOR tags allow for embedding semantic information and indicating specific data types or transformations. This can enhance efficiency by reducing the need for external schema lookups or context, making the data more self-contained and streamlining processing.', '2025-09-22 11:53:01');
 
 -- --------------------------------------------------------
 
@@ -430,7 +442,8 @@ INSERT INTO `quiz_results` (`id`, `user_id`, `quiz_id`, `chapter_id`, `score`, `
 (10, 11, NULL, 2, 20, 100, -10, '2025-09-21 18:27:23'),
 (11, 12, NULL, 1, 15, 100, -10, '2025-09-22 08:48:00'),
 (12, 12, NULL, 17, 30, 100, -10, '2025-09-22 08:51:27'),
-(13, 13, NULL, 1, 20, 100, -10, '2025-09-22 09:09:18');
+(13, 13, NULL, 1, 20, 100, -10, '2025-09-22 09:09:18'),
+(14, 14, NULL, 1, 20, 100, -10, '2025-09-22 09:34:26');
 
 -- --------------------------------------------------------
 
@@ -778,7 +791,8 @@ INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `profile_image`
 (10, 'vgj', 'cfghb@gmail.com', '$2y$10$MRzxOgzJf6jXslWKBjCsfOhdLCkLL6hixhsihFKCblXQVF6HDcuOy', NULL, 1, 20, 0, 0, NULL, 0, NULL, '2025-09-21 18:13:37'),
 (11, 'tgref', 'reddysekharreddy143a@gamil.com', '$2y$10$bg4Jlh4cFCwtxdIBynA2feGLdGGtTJ.F9M.Ivyqb/sh5./giPOIXC', NULL, 1, 0, 10, 0, NULL, 2, '2025-09-21', '2025-09-21 18:15:20'),
 (12, 'sahithi', 'abc@gmail.com', '$2y$10$O0IFLdP4.SICR0J3S4J.mevlSB3nj5iNDQndFYrFI8Cuj3FqHZNMW', NULL, 1, 0, 9, 0, NULL, 2, '2025-09-22', '2025-09-22 08:44:08'),
-(13, 'sharukhussain', 'sharuk@gmail.com', '$2y$10$dlltg0FoWViKdwO6zs1UHOey4wUu.h8D18f/NUcU8WnTIZGC9HO7O', NULL, 1, 10, 4, 0, NULL, 1, '2025-09-22', '2025-09-22 09:07:35');
+(13, 'sharukhussain', 'sharuk@gmail.com', '$2y$10$dlltg0FoWViKdwO6zs1UHOey4wUu.h8D18f/NUcU8WnTIZGC9HO7O', NULL, 1, 10, 4, 0, NULL, 1, '2025-09-22', '2025-09-22 09:07:35'),
+(14, 'jack_sparrow', 'jack1432@gamil.com', '$2y$10$US2RTHTI5VD5i1TupbBs0u9kD1fZfDL8BBRRgWd/L5FnmrxBYBGhq', NULL, 1, 10, 4, 0, NULL, 1, '2025-09-22', '2025-09-22 09:31:47');
 
 -- --------------------------------------------------------
 
@@ -820,7 +834,10 @@ INSERT INTO `user_activity` (`id`, `user_id`, `activity_type`, `meta`, `created_
 (14, 12, 'quiz_submitted', '{\"chapter_id\":1,\"score\":15,\"xp_delta\":-10}', '2025-09-22 08:48:00'),
 (15, 12, 'quiz_submitted', '{\"chapter_id\":17,\"score\":30,\"xp_delta\":-10}', '2025-09-22 08:51:27'),
 (16, 13, 'login', NULL, '2025-09-22 09:07:35'),
-(17, 13, 'quiz_submitted', '{\"chapter_id\":1,\"score\":20,\"xp_delta\":-10}', '2025-09-22 09:09:18');
+(17, 13, 'quiz_submitted', '{\"chapter_id\":1,\"score\":20,\"xp_delta\":-10}', '2025-09-22 09:09:18'),
+(18, 14, 'login', NULL, '2025-09-22 09:31:47'),
+(19, 14, 'quiz_submitted', '{\"chapter_id\":1,\"score\":20,\"xp_delta\":-10}', '2025-09-22 09:34:26'),
+(20, 11, 'login', NULL, '2025-09-23 02:41:30');
 
 -- --------------------------------------------------------
 
@@ -844,7 +861,8 @@ INSERT INTO `user_quiz_progress` (`id`, `user_id`, `chapter_id`, `score`, `compl
 (6, 11, 2, 20, '2025-09-21 18:27:23'),
 (7, 12, 1, 15, '2025-09-22 08:48:00'),
 (8, 12, 17, 30, '2025-09-22 08:51:27'),
-(9, 13, 1, 20, '2025-09-22 09:09:18');
+(9, 13, 1, 20, '2025-09-22 09:09:18'),
+(10, 14, 1, 20, '2025-09-22 09:34:26');
 
 --
 -- Indexes for dumped tables
@@ -964,13 +982,13 @@ ALTER TABLE `leaderboard`
 -- AUTO_INCREMENT for table `questions`
 --
 ALTER TABLE `questions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=285;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=297;
 
 --
 -- AUTO_INCREMENT for table `quiz_results`
 --
 ALTER TABLE `quiz_results`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `subjects`
@@ -988,7 +1006,7 @@ ALTER TABLE `topics`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `user_achievements`
@@ -1000,13 +1018,13 @@ ALTER TABLE `user_achievements`
 -- AUTO_INCREMENT for table `user_activity`
 --
 ALTER TABLE `user_activity`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `user_quiz_progress`
 --
 ALTER TABLE `user_quiz_progress`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables
