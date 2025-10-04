@@ -6,8 +6,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        176,
-        240
+        224,
+        304
       ],
       "id": "7f54ba77-903d-4355-9fa3-85bc6ea09b9c",
       "name": "When clicking ‘Execute workflow’"
@@ -25,7 +25,7 @@
           "values": [
             {
               "column": "id",
-              "value": "219"
+              "value": "367"
             }
           ]
         },
@@ -34,8 +34,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        384,
-        240
+        448,
+        304
       ],
       "id": "15db866d-bdd4-4e32-a878-fb1d410c3100",
       "name": "Select rows from a table",
@@ -53,8 +53,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        544,
-        240
+        672,
+        304
       ],
       "id": "62d26e2f-a13e-4288-accb-bc7a51fa67ea",
       "name": "Loop Over Items"
@@ -65,8 +65,8 @@
       "name": "Replace Me",
       "typeVersion": 1,
       "position": [
-        1840,
-        256
+        2416,
+        304
       ],
       "id": "78524e43-633b-42e2-8d21-e92235184715"
     },
@@ -77,8 +77,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        1696,
-        256
+        2192,
+        128
       ],
       "id": "1bf5b1f8-29aa-472e-97c9-a9268c827244",
       "name": "Wait",
@@ -87,14 +87,14 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT s.name, c.title\nFROM chapters c\nJOIN subjects s ON c.subject_id = s.id\nWHERE c.id =1;\n",
+        "query": "SELECT s.name, c.title\nFROM chapters c\nJOIN subjects s ON c.subject_id = s.id\nWHERE c.id ={{ $json.chapter_id }};\n",
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        768,
-        256
+        896,
+        128
       ],
       "id": "946791be-26ad-4db4-a18b-6fe1c0d14ebb",
       "name": "gets subject and chapter names",
@@ -107,27 +107,13 @@
     },
     {
       "parameters": {
-        "jsonSchemaExample": "{\n  \"mcqs\": [\n    {\n      \"number\": 1,\n      \"question\": \"Management can best be defined as:\",\n      \"options\": {\n        \"a\": \"The art of getting things done through people\",\n        \"b\": \"The process of making profits\",\n        \"c\": \"The ability to supervise workers only\",\n        \"d\": \"The science of producing goods only\"\n      },\n      \"correct_answer\": \"a\",\n      \"explanation\": \"Management is commonly defined as the art of getting things done through others using resources effectively.\"\n    },\n    {\n      \"number\": 2,\n      \"question\": \"Which of the following shows that management is both an art and a science?\",\n      \"options\": {\n        \"a\": \"It involves only experiments\",\n        \"b\": \"It requires personal skills and also principles\",\n        \"c\": \"It deals only with machinery\",\n        \"d\": \"It does not depend on human behavior\"\n      },\n      \"correct_answer\": \"b\",\n      \"explanation\": \"Management is considered both an art (skill, creativity) and a science (systematic principles).\"\n    }\n  ]\n}\n",
-        "autoFix": true
-      },
-      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
-      "typeVersion": 1.3,
-      "position": [
-        1104,
-        480
-      ],
-      "id": "45a946dc-1c20-4c81-8b40-6a39f46c61ca",
-      "name": "Structured Output Parser"
-    },
-    {
-      "parameters": {
         "jsCode": "const items = $input.first().json; \n\nconst chapter_id =$('Select rows from a table').first().json.chapter_id;\nconst topic_id =$('Select rows from a table').first().json.id ;\n\nif (items.output) {\n  items.output.chapter_id = parseInt(chapter_id, 10);\n  items.output.topic_id = parseInt(topic_id, 10);\n}\n\nreturn items;\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1280,
-        256
+        1744,
+        128
       ],
       "id": "40aea0a8-5f44-4842-8b63-5bfb9a9472b1",
       "name": "Code"
@@ -144,70 +130,11 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
       "position": [
-        960,
-        256
+        1152,
+        128
       ],
       "id": "04cc168d-f6ec-4683-9773-1fff3ef1bd34",
       "name": "AI Agent"
-    },
-    {
-      "parameters": {
-        "model": "qwen/qwen3-32b",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
-      "typeVersion": 1,
-      "position": [
-        1200,
-        688
-      ],
-      "id": "873c637c-4be2-4ce6-bdfe-020c631505e4",
-      "name": "Groq Chat Model",
-      "credentials": {
-        "groqApi": {
-          "id": "KZ5QGc2bqUz3f1KO",
-          "name": "Groq account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1,
-      "position": [
-        976,
-        512
-      ],
-      "id": "f8f654d2-37a5-4cd8-b9bd-666b05e4d00b",
-      "name": "Google Gemini Chat Model",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "dfyp9q4hHPILj1ET",
-          "name": "Google Gemini(PaLM) Api account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "model": "meta-llama/llama-3.3-70b-instruct:free",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
-      "typeVersion": 1,
-      "position": [
-        784,
-        512
-      ],
-      "id": "d05ff0c6-754a-49eb-bcd3-eac3c20e87db",
-      "name": "OpenRouter Chat Model",
-      "credentials": {
-        "openRouterApi": {
-          "id": "F4A4JCLsjJuY4D6j",
-          "name": "OpenRouter account 2"
-        }
-      }
     },
     {
       "parameters": {
@@ -245,11 +172,64 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        1488,
-        256
+        1968,
+        128
       ],
       "id": "f1e3b77f-cef2-4b5a-85c7-79043bd27010",
       "name": "inserts MCQs"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"mcqs\": [\n    {\n      \"number\": 1,\n      \"question\": \"Management can best be defined as:\",\n      \"options\": {\n        \"a\": \"The art of getting things done through people\",\n        \"b\": \"The process of making profits\",\n        \"c\": \"The ability to supervise workers only\",\n        \"d\": \"The science of producing goods only\"\n      },\n      \"correct_answer\": \"a\",\n      \"explanation\": \"Management is commonly defined as the art of getting things done through others using resources effectively.\"\n    },\n    {\n      \"number\": 2,\n      \"question\": \"Which of the following shows that management is both an art and a science?\",\n      \"options\": {\n        \"a\": \"It involves only experiments\",\n        \"b\": \"It requires personal skills and also principles\",\n        \"c\": \"It deals only with machinery\",\n        \"d\": \"It does not depend on human behavior\"\n      },\n      \"correct_answer\": \"b\",\n      \"explanation\": \"Management is considered both an art (skill, creativity) and a science (systematic principles).\"\n    }\n  ]\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1376,
+        352
+      ],
+      "id": "45a946dc-1c20-4c81-8b40-6a39f46c61ca",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "model": "x-ai/grok-4-fast",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        352
+      ],
+      "id": "d05ff0c6-754a-49eb-bcd3-eac3c20e87db",
+      "name": "OpenRouter",
+      "credentials": {
+        "openRouterApi": {
+          "id": "F4A4JCLsjJuY4D6j",
+          "name": "OpenRouter account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1248,
+        352
+      ],
+      "id": "f8f654d2-37a5-4cd8-b9bd-666b05e4d00b",
+      "name": "Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "xhYbpoDRTbvop27f",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -321,17 +301,6 @@
         ]
       ]
     },
-    "Structured Output Parser": {
-      "ai_outputParser": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_outputParser",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Code": {
       "main": [
         [
@@ -354,22 +323,6 @@
         ]
       ]
     },
-    "Groq Chat Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Structured Output Parser",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "OpenRouter Chat Model": {
-      "ai_languageModel": [
-        []
-      ]
-    },
     "inserts MCQs": {
       "main": [
         [
@@ -381,7 +334,18 @@
         ]
       ]
     },
-    "Google Gemini Chat Model": {
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter": {
       "ai_languageModel": [
         [
           {
@@ -391,13 +355,18 @@
           }
         ]
       ]
+    },
+    "Gemini": {
+      "ai_languageModel": [
+        []
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "4c007ed4-88e7-490e-afce-818935b41ad3",
+  "versionId": "9b59b707-1374-4952-8915-0e52b5450a46",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "5ec010c60cb3f57afa858e6b48afed0fb9a2d9e86dc9efaa7312c463df0a0d7d"

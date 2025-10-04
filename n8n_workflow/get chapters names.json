@@ -1,0 +1,415 @@
+{
+  "name": "get chapters",
+  "nodes": [
+    {
+      "parameters": {
+        "jsonSchemaExample": "[\n  {\n    \"chapter_number\":\"1\",\n    \"chapter_name\": \"data structures\"\n  },\n  {\n    \"chapter_number\":\"2\",\n    \"chapter_name\": \"functions\"\n  },\n  {   \n    \"chapter_number\":\"3\",\n    \"chapter_name\": \"intruction to python\"\n  }\n]\n",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1600,
+        144
+      ],
+      "id": "e26a0fec-b7eb-4fb4-ba86-a544e3139ec6",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2192,
+        -96
+      ],
+      "id": "5b512367-7a91-4dd3-b807-9755cf8d6b3c",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        2640,
+        -160
+      ],
+      "id": "e82948d5-8687-4fa4-9cd6-a28dbf7edc37"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2864,
+        -96
+      ],
+      "id": "ba39fd76-f35a-4aaf-a9b0-3e915e240d90",
+      "name": "Wait",
+      "webhookId": "ff8cfd42-3cbf-4bf6-9299-9946a5444775"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "use data about of curriculum of diploma computer science\n",
+        "tableName": {
+          "__rl": true,
+          "value": "questions_on_document",
+          "mode": "id"
+        },
+        "topK": 10,
+        "options": {
+          "queryName": "match_questions_on_document"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        1312,
+        144
+      ],
+      "id": "fe95517d-b60f-4429-8bf8-6e578e7bd9c1",
+      "name": "Retrieve curriculum",
+      "credentials": {
+        "supabaseApi": {
+          "id": "HWscazug0OD6wScW",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1968,
+        -96
+      ],
+      "id": "2e5790ee-121e-4725-9110-33b1e2a3b90f",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.prompt }}",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "=# DCME-Curriculum-Chapter-Extractor\n\nYou are **DCME-Curriculum-Chapter-Extractor**.  \nYour task is **twofold**:  \n\n1. **Curriculum Retrieval**  \n   - Precisely interpret user intent, retrieve relevant curriculum content from the *DCME curriculum knowledge store* (“super database”), and synthesize a **structured, citation-backed** answer suitable for students and instructors.  \n   - If no authoritative content exists, explicitly offer a best-effort general pedagogy answer or ask for the source.  \n\n2. **Chapter Extraction**  \n   - From the retrieved curriculum content, identify and output **only the chapter/unit names** in a strict JSON format.  \n   - Ignore irrelevant fields and focus on `answer_text` and `key_points` arrays/strings.  \n\n---\n\n## Operational Pipeline *(internal — DO NOT reveal)*\n\n1. **Interpret & normalize** the user request  \n   - Detect course code, topic, depth (exam-level / overview / step-by-step).  \n\n2. **Formulate retrieval queries**  \n   - Fetch top-k documents from the super database. Prioritize: course code → learning outcomes → assessment/blueprint → lecture notes → sample questions.  \n\n3. **Rerank & filter**  \n   - Sort by relevance and recency, keeping ≤ 8 most relevant passages.  \n\n4. **Synthesize curriculum answer**  \n   - Use retrieved evidence only. Cite each claim:  \n     ```\n     (SourceID: <doc_id>, section: <section>, score: <relevance_score>)\n     ```  \n   - If conflicting, present differences explicitly with citations.  \n   - Provide exam-ready format if requested: definition, key points, examples, study tips, sources, confidence, next steps.  \n\n5. **Extract chapters**  \n   - Read `answer_text` and `key_points`. Identify chapter/unit names.  \n   - Use the `subject_code` from input if present; otherwise, default to `\"unknown\"`.  \n   - Output **only an array of objects** with this structure:  \n     ```json\n     [\n       {\n         \"subject_code\": \"<subject_code>\",\n         \"chapter_name\": \"<exact chapter name>\"\n       }\n     ]\n     ```  \n\n---\n\n## Rules\n\n- **Never invent curriculum facts**; only synthesize from database.  \n- **Do not reveal internal reasoning**; optional: 1–2 sentence rationale.  \n- **Ask only one short clarifying question** if user intent is unclear before retrieving content.  \n- **JSON output must be valid** and strictly follow the structure above.  \n- **Tone:** formal, exam-oriented, precise, helpful.  \n\n---\n\n## LLM Settings (Recommended)\n\n- `temperature`: 0–0.15  \n- `top_p`: 1  \n- `max_tokens`: 512–1200  \n- `retrieval top_k`: 6–8  \n- `reranker`: semantic similarity / cross-encoder  \n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        1120,
+        -96
+      ],
+      "id": "079b02fb-8aa4-4b4d-844a-580ba7373473",
+      "name": "chapters"
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxOutputTokens": 20480,
+          "temperature": 0.8
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1184,
+        144
+      ],
+      "id": "f946852c-5543-49aa-905c-f5a134adfa99",
+      "name": "Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "xhYbpoDRTbvop27f",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "z-ai/glm-4.5-air:free",
+        "options": {
+          "maxRetries": 20
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1088,
+        352
+      ],
+      "id": "1db0f33f-86fa-4fe8-a8be-f80630299ad1",
+      "name": "OpenRouter",
+      "credentials": {
+        "openRouterApi": {
+          "id": "F4A4JCLsjJuY4D6j",
+          "name": "OpenRouter account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1392,
+        352
+      ],
+      "id": "133247d8-321f-4102-9ef6-413ad0078fcd",
+      "name": "Embeddings",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "VwcvvRnW12cw96mN",
+          "name": "Google Gemini(PaLM) Api account 1"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO chapters (subject_id, title, order_index)\nVALUES\n  (\n    (SELECT id FROM subjects WHERE name = '{{ $('When Executed by Another Workflow').item.json.subject_name }}'),'{{ $json.chapter_name }}', {{ $json.chapter_number }}\n  )\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        2416,
+        -160
+      ],
+      "id": "287928d2-1962-40a8-8387-c5e783721d96",
+      "name": "insert chapters",
+      "credentials": {
+        "mySql": {
+          "id": "83aoUVpNHdAnbsCx",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c132698d-63dc-402d-99cb-f72c683e2afb",
+              "name": "=prompt",
+              "value": "=Give me the chapter or unit names for the subject {{ $json.subject_name }}({{ $json.subject_code }}), {{ $json.subject_type }} type, {{ $json.semester }} for the  syllabus. Present them in order as they appear officially in the curriculum.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        864,
+        -96
+      ],
+      "id": "f3db4fca-7076-4102-8d66-cabf8e6d26ef",
+      "name": "prompt"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "subject_code"
+            },
+            {
+              "name": "subject_name"
+            },
+            {
+              "name": "semester"
+            },
+            {
+              "name": "subject_type"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        640,
+        -96
+      ],
+      "id": "35a469b4-6329-401a-89c4-d103e776837a",
+      "name": "When Executed by  get subjects"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "chapters",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "insert chapters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve curriculum": {
+      "ai_tool": [
+        [
+          {
+            "node": "chapters",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "chapters": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "chapters",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OpenRouter": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "chapters",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Retrieve curriculum",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "insert chapters": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prompt": {
+      "main": [
+        [
+          {
+            "node": "chapters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by  get subjects": {
+      "main": [
+        [
+          {
+            "node": "prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6d5e264b-94d0-4362-874f-40daeef019f0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5ec010c60cb3f57afa858e6b48afed0fb9a2d9e86dc9efaa7312c463df0a0d7d"
+  },
+  "id": "PRuSs26y2nQZYhqG",
+  "tags": []
+}

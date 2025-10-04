@@ -1,0 +1,597 @@
+{
+  "name": "get subjects",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1296,
+        224
+      ],
+      "id": "81f2526d-02f7-43e4-bcdf-9d610000ff38",
+      "name": "embedding",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "xhYbpoDRTbvop27f",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        -1168,
+        224
+      ],
+      "id": "6e57122b-69cc-4339-94f0-255dc2033d45",
+      "name": "Data Loader"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1264,
+        1072
+      ],
+      "id": "364c913d-5634-4d7c-886f-e5ecbdd8f3a6",
+      "name": "Embeddings  Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "xhYbpoDRTbvop27f",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "use data about of curriculum of diploma computer science\n",
+        "tableName": {
+          "__rl": true,
+          "value": "questions_on_document",
+          "mode": "id"
+        },
+        "topK": 10,
+        "options": {
+          "queryName": "match_questions_on_document"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        -1344,
+        864
+      ],
+      "id": "026bf67d-c020-40c7-a2a0-a76bc8601600",
+      "name": "Retrieve curriculum",
+      "credentials": {
+        "supabaseApi": {
+          "id": "HWscazug0OD6wScW",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "questions_on_document",
+          "mode": "list",
+          "cachedResultName": "questions_on_document"
+        },
+        "options": {
+          "queryName": "match_questions_on_document"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        -1296,
+        0
+      ],
+      "id": "82130515-ea3e-49c4-97f7-6552627d73dc",
+      "name": "curriculum (data store)",
+      "credentials": {
+        "supabaseApi": {
+          "id": "HWscazug0OD6wScW",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -1744,
+        640
+      ],
+      "id": "f8f5b79b-8d47-4dd4-afaa-56fa384df206",
+      "name": "When chat message received",
+      "webhookId": "979da790-f03e-4bb0-898a-fd9b3ada77c1"
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "value": "subjects",
+          "mode": "list",
+          "cachedResultName": "subjects"
+        },
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "name",
+              "value": "={{ $json.subject_name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -240,
+        576
+      ],
+      "id": "d9610a4a-8ad2-4c03-a49e-dcf335e73b35",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "mySql": {
+          "id": "83aoUVpNHdAnbsCx",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -16,
+        576
+      ],
+      "id": "dcbf281d-f045-45c0-898d-76671e3d73b3",
+      "name": "Wait1",
+      "webhookId": "ff8cfd42-3cbf-4bf6-9299-9946a5444775"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output.subjects",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        640
+      ],
+      "id": "0b258ff2-4821-4654-8348-45d2b7b109d7",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "=# DCME-Curriculum-Assistant (System Prompt)\n\nYou are **DCME-Curriculum-Assistant**.  \n**Source:** DCME curriculum knowledge store.  \n**Goal:** Extract, clean, validate, and structure **Theory subject info** in JSON.\n\n---\n\n## Task\n\n1. **Input:** JSON with `\"answer_text\"`, `\"short_summary\"`, `\"key_points\"`, optional `\"examples\"`, `\"study_tips\"`, `\"sources\"`, `\"confidence\"`, `\"next_steps\"`.  \n2. **Extract Theory subjects only** from `\"answer_text\"` and `\"key_points\"`. Ignore practical/lab subjects.  \n3. **For each Theory subject**, output:\n\n```json\n{\n  \"subject_name\": \"<name>\",\n  \"subject_code\": \"XX-###\",\n  \"semester\": \"<n> Sem\",\n  \"subject_type\": \"Theory\"\n}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        -1504,
+        640
+      ],
+      "id": "50703ecc-152d-4c45-9d4a-8656a4d29ab9",
+      "name": "subjects"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1744,
+        112
+      ],
+      "id": "08492088-e771-436e-b8fb-82669056e78b",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1_rC12yS6MffagHlK1drxexPrVD4ANcCs",
+          "mode": "list",
+          "cachedResultName": "DCME CIR.pdf",
+          "cachedResultUrl": "https://drive.google.com/file/d/1_rC12yS6MffagHlK1drxexPrVD4ANcCs/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1520,
+        112
+      ],
+      "id": "20076bbe-eefa-4cfa-a3bc-7332876d7a97",
+      "name": "download",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "C4hcmlRlrXL062qd",
+          "name": "drive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"subjects\": [\n    {\n      \"subject_name\": \"\",\n      \"subject_code\": \"\",\n      \"semester\": \"\",\n      \"subject_type\": \"Theory\"\n    }\n  ]\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -1056,
+        864
+      ],
+      "id": "7b88138f-41a5-49c4-af2c-17a6739dbe73",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -464,
+        640
+      ],
+      "id": "a7cb4324-889f-4771-ac64-da9ca9939423",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        432,
+        640
+      ],
+      "id": "625cbecc-469f-45de-886e-86f9ce47a845"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1440,
+        1072
+      ],
+      "id": "d80a9404-dfd8-4c00-847e-6445ecbbda36",
+      "name": "Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "PPt2VGeyPM50abHC",
+          "name": "Google Gemini(PaLM) Api account 0"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.0-flash-exp:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -1520,
+        864
+      ],
+      "id": "a9d360c7-85ba-4e64-9abb-a544e018b618",
+      "name": "OpenRouter",
+      "credentials": {
+        "openRouterApi": {
+          "id": "HG8Hktl3ws6KZWul",
+          "name": "OpenRouter account 1"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "PRuSs26y2nQZYhqG",
+          "mode": "list",
+          "cachedResultName": "get chapters"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "subject_code": "={{ $('Loop Over Items1').item.json.subject_code }}",
+            "subject_name": "={{ $('Loop Over Items1').item.json.subject_name }}",
+            "subject_type": "={{ $('Loop Over Items1').item.json.subject_type }}",
+            "semester": "={{ $('Loop Over Items1').item.json.semester }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "subject_code",
+              "displayName": "subject_code",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "subject_name",
+              "displayName": "subject_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "semester",
+              "displayName": "semester",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "subject_type",
+              "displayName": "subject_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": true,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        208,
+        576
+      ],
+      "id": "0c7c99ca-72b1-4716-bce8-96da259161c5",
+      "name": "get chapters"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "embedding": {
+      "ai_embedding": [
+        [
+          {
+            "node": "curriculum (data store)",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "curriculum (data store)",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings  Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Retrieve curriculum",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve curriculum": {
+      "ai_tool": [
+        [
+          {
+            "node": "subjects",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "subjects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "get chapters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "subjects": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "download",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "download": {
+      "main": [
+        [
+          {
+            "node": "curriculum (data store)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "subjects",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "subjects",
+            "type": "ai_languageModel",
+            "index": 1
+          },
+          {
+            "node": "Structured Output Parser1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "subjects",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get chapters": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "df68378a-84c9-422f-8687-9504b219858a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5ec010c60cb3f57afa858e6b48afed0fb9a2d9e86dc9efaa7312c463df0a0d7d"
+  },
+  "id": "FRUiQ8X5ZalH53MO",
+  "tags": []
+}

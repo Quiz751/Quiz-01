@@ -1,0 +1,173 @@
+{
+  "name": "sub-topics insert loop",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me1",
+      "typeVersion": 1,
+      "position": [
+        992,
+        -280
+      ],
+      "id": "a175b6ff-bef6-47b8-9d04-a85feb4bbbcc"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        768,
+        -352
+      ],
+      "id": "18d3030f-97fd-44d8-978b-a5b9aa899d1f",
+      "name": "Wait",
+      "webhookId": "44c06305-8fdb-4b3b-be74-9398703fdb3d"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "topics"
+            },
+            {
+              "name": "chapter_id",
+              "type": "any"
+            }
+          ]
+        }
+      },
+      "id": "c055762a-8fe7-4141-a639-df2372f30060",
+      "typeVersion": 1.1,
+      "name": "topics gives",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        96,
+        -280
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        320,
+        -280
+      ],
+      "id": "72ad2771-f696-4a82-b077-5fc1d44d880f",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "value": "topics",
+          "mode": "list",
+          "cachedResultName": "topics"
+        },
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "chapter_id",
+              "value": "={{ $json.chapter_id }}"
+            },
+            {
+              "column": "name",
+              "value": "={{ $json.topics }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        544,
+        -352
+      ],
+      "id": "04371acd-60c8-4413-af3d-4446d7210863",
+      "name": "Insert topics",
+      "credentials": {
+        "mySql": {
+          "id": "83aoUVpNHdAnbsCx",
+          "name": "MySQL account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Replace Me1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Replace Me1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "topics gives": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Insert topics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert topics": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b02bebca-dcfe-4854-ba45-3f1a3207bf04",
+  "meta": {
+    "instanceId": "5ec010c60cb3f57afa858e6b48afed0fb9a2d9e86dc9efaa7312c463df0a0d7d"
+  },
+  "id": "VHg9JhmFILN2JmaX",
+  "tags": []
+}
