@@ -356,7 +356,7 @@
 /* Question Options */
 .question-options {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns:1fr;
   gap: 12px;
   margin-bottom: 16px;
   flex: 1;
