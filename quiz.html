@@ -157,6 +157,12 @@
                                             </svg>
                                             Retake Quiz
                                         </button>
+                                        <button class="btn btn--info" id="reviewQuizBtn">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M12 20V10M18 20V4M6 20V16" />
+                                            </svg>
+                                            Review Quiz
+                                        </button>
                                         <a href="chapters.html" class="btn btn--secondary" id="goToChaptersBtn">
                                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
                                                 stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -195,6 +201,11 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Quiz Review Screen -->
+                        <div class="quiz-review-container" id="quizReviewScreen" style="display: none;">
+                            <!-- Review content will be dynamically generated here -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -205,6 +216,7 @@
     <script src="js/shared/navigation.js"></script>
     <script src="js/shared/theme.js"></script>
     <script src="js/pages/quiz.js"></script>
+
 </body>
 
 </html>
