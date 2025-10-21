@@ -18,6 +18,8 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
+
+
 // Fetch user data
 $stmt_user = $conn->prepare("SELECT username, email, profile_image, level, xp, progress, streak, created_at, daily_attempts, daily_attempts_date FROM users WHERE id = ?");
 $stmt_user->bind_param('i', $user_id);

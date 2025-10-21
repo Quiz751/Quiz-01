@@ -1,0 +1,410 @@
+{
+  "name": "Topic generator",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        176
+      ],
+      "id": "7c0f77fc-2c8b-48a6-9296-b0ca1c7ee407",
+      "name": "When clicking ‘Execute workflow’",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        320,
+        176
+      ],
+      "id": "bbd9ede3-9c3b-4046-bb8a-1775c11f086a",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        1992,
+        0
+      ],
+      "id": "4bf993cb-d1e5-4443-95b9-d21a05cb73c3"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "subtopics",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1544,
+        0
+      ],
+      "id": "71da037b-684b-489b-9bbe-525d5d71d497",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2216,
+        176
+      ],
+      "id": "9deacd5a-274a-41d0-96cb-579c85436ea9",
+      "name": "Wait1",
+      "webhookId": "3c118056-43a0-4bc4-b667-af9b57934014"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "VHg9JhmFILN2JmaX",
+          "mode": "list",
+          "cachedResultName": "sub-topics insert loop"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "topics": "={{ $json.subtopic }}",
+            "chapter_id": "={{ $('get chapters').item.json.id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "topics",
+              "displayName": "topics",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "chapter_id",
+              "displayName": "chapter_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1768,
+        0
+      ],
+      "id": "cad497fa-55bc-4d1b-ae23-b001976ce878",
+      "name": "topics insert"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT  name FROM subjects WHERE id={{ $json.subject_id}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        544,
+        0
+      ],
+      "id": "2f992181-55f7-45cd-b7d3-e4821964013d",
+      "name": "gets subject name",
+      "credentials": {
+        "mySql": {
+          "id": "83aoUVpNHdAnbsCx",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT title, id, subject_id\nFROM chapters\nWHERE id = 32;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        96,
+        176
+      ],
+      "id": "d3263d33-7af2-44ec-bcd0-e9e013c8c868",
+      "name": "get chapters",
+      "credentials": {
+        "mySql": {
+          "id": "83aoUVpNHdAnbsCx",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate subtopics for the following chapters. Provide output strictly as a JSON array following the system prompt format. Do not include any extra text or explanation.\n\nInput:\n[\n  { \"subject_name\": \"{{ $('gets subject name').item.json.name }}\", \"chapter_name\": \"{{ $('get chapters').item.json.title }}\" }\n]\n",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "=# Role\nYou are an **AI Subtopic Generator Agent**.\n\n# Goal\nTake a subject name and a chapter (JSON with `\"chapter_name\"`) and generate **only subtopics** for each chapter.\n\n# Output Contract (STRICT)\n- Return a single **valid JSON array**.\n- **Do not** wrap output in backticks or Markdown.\n- **Do not** include any text before or after the JSON.\n- Use straight quotes only.\n- No comments, no ellipses, no trailing commas.\n\n# JSON Shape\n[\n  {\n    \"chapter_name\": \"string\",\n    \"subtopics\": [\"string\", \"string\", \"string\", \"...at least 10 total...\"]\n  }\n]\n\n# Rules\n1. Generate **≥10** subtopics per chapter.\n2. Each subtopic: 2–6 words, clear, academic, unique, relevant.\n3. **No explanations** or extra fields.\n\n# Example Input\n[\n  { \"chapter_name\": \"Android Basics and Anatomy\" }\n]\n\n# Example Output\n[\n  {\n    \"chapter_name\": \"Android Advanced Concepts\",\n    \"subtopics\": [\n      \"Fragments and lifecycle\",\n      \"Background services\",\n      \"Broadcast receivers\",\n      \"Content providers\",\n      \"Threading and handlers\",\n      \"WorkManager tasks\",\n      \"Notifications system\",\n      \"Location and GPS\",\n      \"Sensor integration\",\n      \"Material components\"\n    ]\n  }\n]\n",
+          "maxIterations": 1000
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        768,
+        0
+      ],
+      "id": "e9899e87-53f0-44f3-a541-2904062d8763",
+      "name": "topics generates"
+    },
+    {
+      "parameters": {
+        "jsCode": "let chapters=$input.first().json.output\n\n// If chapters is a string → parse it\nif (typeof chapters === \"string\") {\n  chapters = JSON.parse(chapters);\n}\n\n// Ensure array\nif (!Array.isArray(chapters)) {\n  chapters = [chapters];\n}\n\nlet transformed = chapters.map(chapter => {\n  return {\n    chapter_name: chapter.chapter_name,\n    subtopics: chapter.subtopics.map((topic, index) => ({\n      \"subtopic\": topic,\n      \"s.no\": index + 1\n    }))\n  };\n});\n\n// ✅ Return properly formatted for n8n\nreturn transformed.map(ch => ({ json: ch }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        0
+      ],
+      "id": "ff182470-c80c-49ce-ac09-2cc5b84df760",
+      "name": "structured json(topics)"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "[\n  {\n    \"chapter_name\": \"Android Advanced Concepts\",\n    \"subtopics\": [\n      \"Fragments and lifecycle\",\n      \"Background services\",\n      \"Broadcast receivers\",\n      \"Content providers\",\n      \"Threading and handlers\",\n      \"WorkManager tasks\",\n      \"Notifications system\",\n      \"Location and GPS\",\n      \"Sensor integration\",\n      \"Material components\"\n    ]\n  }\n]\n",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        952,
+        224
+      ],
+      "id": "b7b04283-c1e3-4d6c-9a28-189be2420364",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "model": "qwen/qwen3-235b-a22b:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        776,
+        224
+      ],
+      "id": "8f1574f1-a881-42eb-8bdc-5390e1e5068c",
+      "name": "OpenRouter",
+      "credentials": {
+        "openRouterApi": {
+          "id": "shZp20p0n1RnU6gC",
+          "name": "OpenRouter account 0"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        948,
+        432
+      ],
+      "id": "c32612a4-f72e-4e1a-a91e-03cb2a1cc368",
+      "name": "Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "PPt2VGeyPM50abHC",
+          "name": "Google Gemini(PaLM) Api account 0"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "get chapters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "gets subject name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "topics insert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "topics insert": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gets subject name": {
+      "main": [
+        [
+          {
+            "node": "topics generates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get chapters": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "topics generates": {
+      "main": [
+        [
+          {
+            "node": "structured json(topics)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "structured json(topics)": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "topics generates",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "topics generates",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "topics generates",
+            "type": "ai_languageModel",
+            "index": 1
+          },
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ca9128dc-6286-420b-8d18-1d00ffd2ad63",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5ec010c60cb3f57afa858e6b48afed0fb9a2d9e86dc9efaa7312c463df0a0d7d"
+  },
+  "id": "hgh1UlBy9wa6vE6i",
+  "tags": []
+}

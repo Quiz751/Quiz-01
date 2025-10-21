@@ -7,9 +7,10 @@ class QuizManager {
         this.startTime = null;
         this.endTime = null;
         this.timerInterval = null;
-        this.timeLimit = 15 * 60; // 15 minutes in seconds
-        this.timeRemaining = this.timeLimit;
+        this.timeLimit = 0; // Will be calculated based on the number of questions
+        this.timeRemaining = 0;
         this.subjectId = null; // To store the context
+        this.currentReviewQuestionIndex = 0;
 
         this.initializeQuiz();
     }
@@ -68,6 +69,8 @@ class QuizManager {
                     this.questions = normalized;
                     this.userAnswers = new Array(this.questions.length).fill(null);
                     this.updateResultPageLinks();
+                    this.calculateTimeLimit(); // Calculate time limit based on questions
+                    this.updateQuizStats(); // Update stats after loading questions
                     return; // Exit the function to prevent API call
                 } catch (e) {
                     console.error("Failed to parse AI quiz data from sessionStorage", e);
@@ -91,6 +94,8 @@ class QuizManager {
         if (!endpoint) {
             this.questions = [];
             this.userAnswers = [];
+            this.calculateTimeLimit(); // Calculate time limit based on questions
+            this.updateQuizStats(); // Also call here to show "0 questions"
             return;
         }
 
@@ -120,6 +125,15 @@ class QuizManager {
 
         this.userAnswers = new Array(this.questions.length).fill(null);
         this.updateResultPageLinks();
+        this.calculateTimeLimit(); // Calculate time limit based on questions
+        this.updateQuizStats(); // Update stats after loading questions
+    }
+
+    calculateTimeLimit() {
+        const totalQuestions = this.questions.length;
+        const timePerQuestion = 45; // 45 seconds per question
+        this.timeLimit = totalQuestions * timePerQuestion;
+        this.timeRemaining = this.timeLimit;
     }
 
     updateResultPageLinks() {
@@ -168,10 +182,13 @@ class QuizManager {
 
         // Result page buttons
         const retakeBtn = document.getElementById('retakeQuizBtn');
-        const viewAnswersBtn = document.getElementById('viewAnswersBtn');
-
-        if (retakeBtn) retakeBtn.addEventListener('click', () => this.retakeQuiz());
-        if (viewAnswersBtn) viewAnswersBtn.addEventListener('click', () => this.viewAnswers());
+        if (retakeBtn) {
+            retakeBtn.addEventListener('click', () => this.retakeQuiz());
+        }
+        const reviewQuizBtn = document.getElementById('reviewQuizBtn');
+        if (reviewQuizBtn) {
+            reviewQuizBtn.addEventListener('click', () => this.reviewQuiz());
+        }
     }
 
     animateQuizContainer() {
@@ -195,10 +212,6 @@ class QuizManager {
 
     startQuiz() {
         this.startTime = new Date();
-        this.timeRemaining = this.timeLimit;
-
-        // Update quiz stats based on number of questions
-        this.updateQuizStats();
 
         // Smooth transition from start screen to question screen
         this.transitionToQuestionScreen();
@@ -238,6 +251,7 @@ class QuizManager {
 
     updateQuizStats() {
         const totalQuestions = this.questions.length;
+        const timeInMinutes = Math.ceil(this.timeLimit / 60);
         const quizStatsContainer = document.querySelector('.quiz-stats');
         if (quizStatsContainer) {
             quizStatsContainer.innerHTML = `
@@ -246,7 +260,7 @@ class QuizManager {
                         <circle cx="12" cy="12" r="10" />
                         <polyline points="12,6 12,12 16,14" />
                     </svg>
-                    <span>15 minutes</span>
+                    <span>${timeInMinutes} minutes</span>
                 </div>
                 <div class="quiz-stat">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -263,7 +277,7 @@ class QuizManager {
         const instructionsList = document.querySelector('.quiz-instructions ul');
         if (instructionsList) {
             instructionsList.innerHTML = `
-                <li>You have 15 minutes to complete ${totalQuestions} questions</li>
+                <li>You have ${timeInMinutes} minutes to complete ${totalQuestions} questions</li>
                 <li>Each question is worth ${totalQuestions > 0 ? Math.round(100 / totalQuestions) : 0} points</li>
                 <li>You can review and change answers before submitting</li>
             `;
@@ -437,53 +451,52 @@ class QuizManager {
     }
 
     submitQuiz() {
-        if (!confirm('Are you sure you want to submit the quiz? You cannot change your answers after submission.')) {
-            return;
-        }
-        clearInterval(this.timerInterval);
-        this.endTime = new Date();
-        const results = this.calculateResults();
-        const urlParams = new URLSearchParams(window.location.search);
-        const chapterId = urlParams.get('chapter_id');
-        const mode = urlParams.get('mode');
+        this.showConfirmationModal('Are you sure you want to submit the quiz? You cannot change your answers after submission.', () => {
+            clearInterval(this.timerInterval);
+            this.endTime = new Date();
+            const results = this.calculateResults();
+            const urlParams = new URLSearchParams(window.location.search);
+            const chapterId = urlParams.get('chapter_id');
+            const mode = urlParams.get('mode');
 
-        // For AI quizzes, don't submit to the backend. Just show results.
-        if (mode === 'ai') {
-            this.showResults();
-            return;
-        }
-
-        // Default chapterId for complete subject mode: 0
-        const payload = {
-            chapter_id: chapterId ? parseInt(chapterId, 10) : 0,
-            score: results.score
-        };
-        fetch('api/routes/quizzes.php?action=submit_quiz', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify(payload)
-        }).then(async (res) => {
-            const data = await res.json().catch(() => ({}));
-            if (!res.ok) {
-                // Still show results, but optionally alert the error
-                if (data && data.error) {
-                    console.warn('Quiz submit error:', data.error);
-                }
+            // For AI quizzes, don't submit to the backend. Just show results.
+            if (mode === 'ai') {
+                this.showResults();
+                return;
             }
-            this.showResults();
-            // Broadcast updated stats across tabs/pages via localStorage to force reactive updates
-            try {
-                const payload = {
-                    type: 'stats_update',
-                    at: Date.now(),
-                    xp_delta: data && typeof data.xp_delta === 'number' ? data.xp_delta : 0,
-                    stats: data && data.stats ? data.stats : null
-                };
-                localStorage.setItem('quizai:lastStatsUpdate', JSON.stringify(payload));
-            } catch (_) { }
-        }).catch(() => {
-            this.showResults();
+
+            // Default chapterId for complete subject mode: 0
+            const payload = {
+                chapter_id: chapterId ? parseInt(chapterId, 10) : 0,
+                score: results.score
+            };
+            fetch('api/routes/quizzes.php?action=submit_quiz', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify(payload)
+            }).then(async (res) => {
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                    // Still show results, but optionally alert the error
+                    if (data && data.error) {
+                        console.warn('Quiz submit error:', data.error);
+                    }
+                }
+                this.showResults();
+                // Broadcast updated stats across tabs/pages via localStorage to force reactive updates
+                try {
+                    const payload = {
+                        type: 'stats_update',
+                        at: Date.now(),
+                        xp_delta: data && typeof data.xp_delta === 'number' ? data.xp_delta : 0,
+                        stats: data && data.stats ? data.stats : null
+                    };
+                    localStorage.setItem('quizai:lastStatsUpdate', JSON.stringify(payload));
+                } catch (_) { }
+            }).catch(() => {
+                this.showResults();
+            });
         });
     }
 
@@ -632,7 +645,7 @@ class QuizManager {
         // Reset quiz state
         this.currentQuestionIndex = 0;
         this.userAnswers = new Array(this.questions.length).fill(null);
-        this.timeRemaining = this.timeLimit;
+        this.calculateTimeLimit(); // Recalculate time limit
         this.startTime = null;
         this.endTime = null;
 
@@ -647,7 +660,7 @@ class QuizManager {
         // Reset timer display
         const timerElement = document.getElementById('quizTimer');
         if (timerElement) {
-            timerElement.textContent = '15:00';
+            timerElement.textContent = this.formatTime(this.timeLimit);
             timerElement.style.color = 'var(--primary)';
         }
     }
@@ -675,59 +688,127 @@ class QuizManager {
         }, 300);
     }
 
-    viewAnswers() {
-        // Scroll to the review content or render if missing
-        const container = document.getElementById('answerReviewContainer');
-        if (container) {
-            container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            return;
-        }
-        // Build review
-        const resultScreen = document.getElementById('quizResultScreen');
-        if (!resultScreen) return;
-        const review = document.createElement('div');
-        review.id = 'answerReviewContainer';
-        review.style.marginTop = '24px';
-        this.questions.forEach((q, idx) => {
-            const userChoice = this.userAnswers[idx];
-            const correctIdx = q.correct;
-            const block = document.createElement('div');
-            block.className = 'answer-review-item';
-            block.style.margin = '16px 0';
-            const title = document.createElement('h3');
-            title.textContent = `${idx + 1}. ${q.question}`;
-            title.style.fontSize = '1rem';
-            title.style.marginBottom = '8px';
-            block.appendChild(title);
-            const list = document.createElement('ul');
-            list.style.listStyle = 'none';
-            list.style.padding = '0';
-            (q.options || []).slice(0, 4).forEach((opt, i) => {
-                const li = document.createElement('li');
-                li.style.margin = '4px 0';
-                li.style.padding = '6px 8px';
-                if (i === correctIdx) {
-                    li.classList.add('mcq-fix-correct');
-                    li.style.color = '#16a34a';
-                } else if (userChoice !== correctIdx && i === userChoice) {
-                    li.classList.add('mcq-fix-wrong');
-                    li.style.color = '#dc2626';
-                }
-                li.innerHTML = `<strong>${String.fromCharCode(65 + i)}.</strong> ${opt}`;
-                list.appendChild(li);
-            });
-            block.appendChild(list);
-            if (q.explanation) {
-                const exp = document.createElement('div');
-                exp.textContent = q.explanation;
-                exp.style.marginTop = '6px';
-                block.appendChild(exp);
-            }
-            review.appendChild(block);
+    showConfirmationModal(message, onConfirm) {
+        const modalHtml = `
+            <div class="confirmation-modal-overlay">
+                <div class="confirmation-modal">
+                    <div class="modal-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </div>
+                    <div class="modal-content">
+                        <p>${message}</p>
+                        <div class="modal-buttons">
+                            <button id="confirmBtn" class="btn btn--accent">Confirm</button>
+                            <button id="cancelBtn" class="btn btn--secondary">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const body = document.querySelector('body');
+        body.insertAdjacentHTML('beforeend', modalHtml);
+
+        document.getElementById('confirmBtn').addEventListener('click', () => {
+            onConfirm();
+            this.removeConfirmationModal();
         });
-        resultScreen.appendChild(review);
-        review.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        document.getElementById('cancelBtn').addEventListener('click', () => {
+            this.removeConfirmationModal();
+        });
     }
+
+    removeConfirmationModal() {
+        const modal = document.querySelector('.confirmation-modal-overlay');
+        if (modal) {
+            modal.remove();
+        }
+    }
+
+    reviewQuiz() {
+        const resultScreen = document.getElementById('quizResultScreen');
+        const reviewScreen = document.getElementById('quizReviewScreen');
+
+        // Hide result screen and show review screen
+        resultScreen.style.display = 'none';
+        reviewScreen.style.display = 'block';
+
+        // Set up the review screen structure
+        reviewScreen.innerHTML = `<div id="reviewQuestionContainer"></div>`;
+
+        this.currentReviewQuestionIndex = 0;
+        this.loadReviewQuestion(this.currentReviewQuestionIndex);
+    }
+
+    loadReviewQuestion(index) {
+        const reviewQuestionContainer = document.getElementById('reviewQuestionContainer');
+        const question = this.questions[index];
+        const userAnswer = this.userAnswers[index];
+        const correctAnswer = question.correct;
+        const isCorrect = userAnswer === correctAnswer;
+
+        let reviewHtml = `<div class="review-question">`;
+        reviewHtml += `<h4>${index + 1}. ${question.question}</h4>`;
+        reviewHtml += `<div class="review-options">`;
+
+        question.options.forEach((option, optionIndex) => {
+            let optionClass = '';
+            if (optionIndex === correctAnswer) {
+                optionClass = 'correct';
+            } else if (optionIndex === userAnswer && !isCorrect) {
+                optionClass = 'incorrect';
+            }
+
+            reviewHtml += `<div class="review-option ${optionClass}"><strong>${String.fromCharCode(65 + optionIndex)}.</strong> ${option}</div>`;
+        });
+
+        reviewHtml += `</div>`; // close review-options
+
+        if (question.explanation) {
+            reviewHtml += `<div class="review-explanation"><strong>Explanation:</strong> ${question.explanation}</div>`;
+        }
+
+        reviewHtml += `</div>`; // close review-question
+
+        // Navigation
+        reviewHtml += `<div class="review-navigation">`;
+        reviewHtml += `<button id="prevReviewBtn" class="btn btn--secondary" ${index === 0 ? 'disabled' : ''}>Previous</button>`;
+
+        if (index === this.questions.length - 1) {
+            reviewHtml += `<button id="finishReviewBtn" class="btn btn--primary">Result</button>`;
+        } else {
+            reviewHtml += `<button id="nextReviewBtn" class="btn btn--primary">Next</button>`;
+        }
+
+        reviewHtml += `</div>`;
+
+        reviewQuestionContainer.innerHTML = reviewHtml;
+
+        // Add event listeners for navigation
+        if (index > 0) {
+            document.getElementById('prevReviewBtn').addEventListener('click', () => {
+                this.loadReviewQuestion(index - 1);
+            });
+        }
+
+        if (index < this.questions.length - 1) {
+            document.getElementById('nextReviewBtn').addEventListener('click', () => {
+                this.loadReviewQuestion(index + 1);
+            });
+        } else {
+            document.getElementById('finishReviewBtn').addEventListener('click', () => {
+                document.getElementById('quizReviewScreen').style.display = 'none';
+                document.getElementById('quizResultScreen').style.display = 'block';
+            });
+        }
+    }
+
+
 }
 
 // Initialize quiz when page loads
