@@ -3,7 +3,133 @@ document.addEventListener('DOMContentLoaded', function() {
     setupAuthTabs();
     setupPasswordToggle();
     setupAuthSubmitHandlers();
+    setupForgotPassword();
 });
+
+function setupForgotPassword() {
+    const forgotPasswordLink = document.querySelector('.form__forgot');
+
+    if (forgotPasswordLink) {
+        forgotPasswordLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showEmailPrompt();
+        });
+    }
+}
+
+function showEmailPrompt() {
+    const modalContent = `
+        <div class="modal-content">
+            <h2>Forgot Password</h2>
+            <p>Please enter your email address to reset your password.</p>
+            <div class="form__group">
+                <div class="form__input-wrapper">
+                    <input type="email" id="email-for-reset" class="form__input" placeholder=" " required>
+                    <label class="form__label">Email Address</label>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button id="submitEmailBtn" class="btn btn--primary">Next</button>
+                <button id="cancelBtn" class="btn btn--secondary">Cancel</button>
+            </div>
+        </div>
+    `;
+
+    showModal(modalContent, (modal) => {
+        modal.querySelector('#submitEmailBtn').addEventListener('click', async () => {
+            const email = modal.querySelector('#email-for-reset').value;
+            if (!email) {
+                alert('Please enter an email.');
+                return;
+            }
+
+            // Check if email exists
+            const res = await fetch(`api/routes/auth.php?action=check_email&email=${encodeURIComponent(email)}`);
+            const data = await res.json();
+
+            if (data.exists) {
+                showPasswordPrompt(email);
+            } else {
+                alert('No account found with that email address.');
+            }
+        });
+    });
+}
+
+function showPasswordPrompt(email) {
+    const modalContent = `
+        <div class="modal-content">
+            <h2>Reset Password</h2>
+            <p>Enter your new password for ${email}.</p>
+            <div class="form__group">
+                <div class="form__input-wrapper">
+                    <input type="password" id="new-password" class="form__input" placeholder=" " required>
+                    <label class="form__label">New Password</label>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button id="submitPasswordBtn" class="btn btn--primary">Reset Password</button>
+                <button id="cancelBtn" class="btn btn--secondary">Cancel</button>
+            </div>
+        </div>
+    `;
+
+    showModal(modalContent, (modal) => {
+        modal.querySelector('#submitPasswordBtn').addEventListener('click', async () => {
+            const password = modal.querySelector('#new-password').value;
+            if (!password) {
+                alert('Please enter a new password.');
+                return;
+            }
+
+            const res = await fetch('api/routes/auth.php?action=reset_password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            if (res.ok) {
+                alert('Password reset successfully!');
+                removeModal();
+            } else {
+                alert('Failed to reset password.');
+            }
+        });
+    });
+}
+
+function showModal(content, callback) {
+    removeModal(); // Remove any existing modals
+
+    const modalHtml = `
+        <div class="confirmation-modal-overlay">
+            <div class="confirmation-modal">
+                ${content}
+            </div>
+        </div>
+    `;
+
+    const body = document.querySelector('body');
+    body.insertAdjacentHTML('beforeend', modalHtml);
+
+    const modal = document.querySelector('.confirmation-modal-overlay');
+
+    modal.querySelector('#cancelBtn').addEventListener('click', () => {
+        removeModal();
+    });
+
+    if (callback) {
+        callback(modal);
+    }
+}
+
+function removeModal() {
+    const modal = document.querySelector('.confirmation-modal-overlay');
+    if (modal) {
+        modal.remove();
+    }
+}
+
 
 function setupAuthTabs() {
     const tabs = document.querySelectorAll('.auth-tab');
