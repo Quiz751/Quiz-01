@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuizAI - Leaderboard</title>
+    <title>QuizAI - Chapters</title>
     <!-- Shared CSS files -->
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/layout.css">
-    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
     <!-- Page-specific CSS -->
-    <link rel="stylesheet" href="css/pages/leaderboard.css">
+    <link rel="stylesheet" href="../css/pages/chapters.css">
 </head>
 <body>
     <div id="root">
@@ -25,7 +25,7 @@
                     <li><a href="home.html" class="nav__link">Home</a></li>
                     <li><a href="dashboard.html" class="nav__link">Dashboard</a></li>
                     <li><a href="subjects.html" class="nav__link">Subjects</a></li>
-                    <li><a href="leaderboard.html" class="nav__link nav__link--active">Leaderboard</a></li>
+                    <li><a href="leaderboard.html" class="nav__link">Leaderboard</a></li>
                     <li><a href="profile.html" class="nav__link">Profile</a></li>
                 </ul>
 
@@ -53,7 +53,7 @@
                     <a href="home.html" class="nav__mobile-link">Home</a>
                     <a href="dashboard.html" class="nav__mobile-link">Dashboard</a>
                     <a href="subjects.html" class="nav__mobile-link">Subjects</a>
-                    <a href="leaderboard.html" class="nav__mobile-link nav__mobile-link--active">Leaderboard</a>
+                    <a href="leaderboard.html" class="nav__mobile-link">Leaderboard</a>
                     <a href="profile.html" class="nav__mobile-link">Profile</a>
                 </div>
             </nav>
@@ -61,53 +61,26 @@
 
         <!-- Main Content -->
         <main id="main-content">
-            <div class="leaderboard-page">
+            <div class="chapters-page">
                 <div class="container">
-                    <div class="leaderboard-header">
-                        <h1 class="page-title">Global Leaderboard</h1>
-                        <p class="page-subtitle">See how you rank among the best learners worldwide</p>
+                    <div class="chapters-header">
+                        <div class="breadcrumb">
+                            <a href="subjects.html" class="breadcrumb__link">Subjects</a>
+                            <span class="breadcrumb__separator">›</span>
+                            <span class="breadcrumb__current" id="subjectName"></span>
+                        </div>
+                        <h1 class="page-title" id="pageTitle">Chapters</h1>
+                        <p class="page-subtitle">Choose a chapter to start your learning journey</p>
                     </div>
 
-                    <!-- Stats Overview -->
-                    <div class="leaderboard-stats">
-                        <div class="stat-card stat-card--3d">
-                            <div class="stat-card__icon">🏆</div>
-                            <div class="stat-card__value">0</div>
-                            <div class="stat-card__label">Top Score</div>
-                        </div>
-                        <div class="stat-card stat-card--3d">
-                            <div class="stat-card__icon">👥</div>
-                            <div class="stat-card__value">0</div>
-                            <div class="stat-card__label">Active Players</div>
-                        </div>
-                        <div class="stat-card stat-card--3d">
-                            <div class="stat-card__icon">🔥</div>
-                            <div class="stat-card__value">0</div>
-                            <div class="stat-card__label">Day Streak Record</div>
-                        </div>
-                    </div>
-
-                    <!-- Podium -->
-                    <div class="podium-container">
-                        <div class="podium">
-                            <!-- Podium will be dynamically generated -->
-                        </div>
-                    </div>
-
-                    
-
-                    <!-- Rankings List -->
-                    <div class="rankings-container">
-                        <h2 class="section-title">Current Rankings</h2>
-                        <div class="rankings-list">
-                            <!-- Rankings will be dynamically generated -->
-                        </div>
+                    <div class="chapters-grid" id="chaptersGrid">
+                        <!-- Chapters will be dynamically loaded based on subject -->
                     </div>
                 </div>
             </div>
         </main>
     </div>
-    <!-- Bottom Navigation (Mobile only) -->
+      <!-- Bottom Navigation (Mobile only) -->
 <nav class="bottom-nav">
   <a href="home.html" class="bottom-nav__link ">
     <span class="icon">🏠</span>
@@ -117,7 +90,7 @@
     <span class="icon">📊</span>
     <span class="label">Dashboard</span>
   </a>
-  <a href="leaderboard.html" class="bottom-nav__link bottom-nav__link--active">
+  <a href="leaderboard.html" class="bottom-nav__link ">
     <span class="icon">🏆</span>
     <span class="label">Leaderboard</span>
   </a>
@@ -131,8 +104,8 @@
   </a>
 </nav>
     <!-- Page-specific JavaScript -->
-    <script src="js/shared/navigation.js"></script>
-    <script src="js/shared/theme.js"></script>
-    <script src="js/pages/leaderboard.js"></script>
+    <script src="../js/shared/navigation.js"></script>
+    <script src="../js/shared/theme.js"></script>
+    <script src="../js/pages/chapters.js"></script>
 </body>
 </html>

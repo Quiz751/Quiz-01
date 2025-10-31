@@ -77,7 +77,7 @@ function setupAuthSubmitHandlers() {
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Signing In...';
                 try {
-                    const res = await fetch('api/routes/auth.php?action=login', {
+                    const res = await fetch('../../../api/routes/auth.php?action=login', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         credentials: 'include',
@@ -111,7 +111,7 @@ function setupAuthSubmitHandlers() {
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Creating...';
                 try {
-                    const res = await fetch('api/routes/auth.php?action=register', {
+                    const res = await fetch('../../../api/routes/auth.php?action=register', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         credentials: 'include',
@@ -122,7 +122,7 @@ function setupAuthSubmitHandlers() {
                         showAlert('Error', data.error || 'Registration failed');
                     } else {
                         // Auto-login after signup
-                        const loginRes = await fetch('api/routes/auth.php?action=login', {
+                        const loginRes = await fetch('../../../api/routes/auth.php?action=login', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             credentials: 'include',

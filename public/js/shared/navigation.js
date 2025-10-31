@@ -42,7 +42,7 @@ async function checkSessionAndToggleCTA() {
     const btn = document.querySelector('.nav .btn.btn--primary');
     btn.style.display = 'none';
     try {
-        const res = await fetch('api/routes/auth.php?action=check_session', { credentials: 'include' });
+        const res = await fetch('../../../api/routes/auth.php?action=check_session', { credentials: 'include' });
         const data = await res.json().catch(() => ({}));
         if (res.ok && data && data.logged_in) {
             if (btn) {
