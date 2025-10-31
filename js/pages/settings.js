@@ -76,12 +76,12 @@ function setupSettingsForm() {
                 });
                 const result = await res.json();
                 if (result.success) {
-                    alert('Settings updated successfully!');
+                    showAlert('Success', 'Settings updated successfully!');
                 } else {
-                    alert(`Error: ${result.error}`);
+showAlert('Error', `Error: ${result.error}`);
                 }
             } catch (error) {
-                alert('An error occurred while updating settings.');
+                showAlert('Error', 'An error occurred while updating settings.');
             }
         });
     }
@@ -157,17 +157,10 @@ function setupAvatarUpload() {
 
 async function updateProfileImage(imageData) {
     try {
-        const res = await fetch('api/routes/settings.php?action=update_profile_image', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ image_data: imageData })
-        });
-        const result = await res.json();
-        if (!result.success) {
-            alert(`Error: ${result.error}`);
+showAlert('Error', `Error: ${result.error}`);
         }
     } catch (error) {
-        alert('An error occurred while updating the profile image.');
+        showAlert('Error', 'An error occurred while updating the profile image.');
     }
 }
 
@@ -178,10 +171,10 @@ async function removeProfileImage() {
         });
         const result = await res.json();
         if (!result.success) {
-            alert(`Error: ${result.error}`);
+            showAlert('Error', `Error: ${result.error}`);
         }
     } catch (error) {
-        alert('An error occurred while removing the profile image.');
+        showAlert('Error', 'An error occurred while removing the profile image.');
     }
 }
 

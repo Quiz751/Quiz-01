@@ -7,8 +7,8 @@ class QuizManager {
         this.startTime = null;
         this.endTime = null;
         this.timerInterval = null;
-        this.timeLimit = 15 * 60; // 15 minutes in seconds
-        this.timeRemaining = this.timeLimit;
+        this.timeLimit = 0; // Will be calculated based on the number of questions
+        this.timeRemaining = 0;
         this.subjectId = null; // To store the context
         this.currentReviewQuestionIndex = 0;
 
@@ -69,6 +69,8 @@ class QuizManager {
                     this.questions = normalized;
                     this.userAnswers = new Array(this.questions.length).fill(null);
                     this.updateResultPageLinks();
+                    this.calculateTimeLimit(); // Calculate time limit based on questions
+                    this.updateQuizStats(); // Update stats after loading questions
                     return; // Exit the function to prevent API call
                 } catch (e) {
                     console.error("Failed to parse AI quiz data from sessionStorage", e);
@@ -92,6 +94,8 @@ class QuizManager {
         if (!endpoint) {
             this.questions = [];
             this.userAnswers = [];
+            this.calculateTimeLimit(); // Calculate time limit based on questions
+            this.updateQuizStats(); // Also call here to show "0 questions"
             return;
         }
 
@@ -121,6 +125,15 @@ class QuizManager {
 
         this.userAnswers = new Array(this.questions.length).fill(null);
         this.updateResultPageLinks();
+        this.calculateTimeLimit(); // Calculate time limit based on questions
+        this.updateQuizStats(); // Update stats after loading questions
+    }
+
+    calculateTimeLimit() {
+        const totalQuestions = this.questions.length;
+        const timePerQuestion = 45; // 45 seconds per question
+        this.timeLimit = totalQuestions * timePerQuestion;
+        this.timeRemaining = this.timeLimit;
     }
 
     updateResultPageLinks() {
@@ -199,10 +212,6 @@ class QuizManager {
 
     startQuiz() {
         this.startTime = new Date();
-        this.timeRemaining = this.timeLimit;
-
-        // Update quiz stats based on number of questions
-        this.updateQuizStats();
 
         // Smooth transition from start screen to question screen
         this.transitionToQuestionScreen();
@@ -242,6 +251,7 @@ class QuizManager {
 
     updateQuizStats() {
         const totalQuestions = this.questions.length;
+        const timeInMinutes = Math.ceil(this.timeLimit / 60);
         const quizStatsContainer = document.querySelector('.quiz-stats');
         if (quizStatsContainer) {
             quizStatsContainer.innerHTML = `
@@ -250,7 +260,7 @@ class QuizManager {
                         <circle cx="12" cy="12" r="10" />
                         <polyline points="12,6 12,12 16,14" />
                     </svg>
-                    <span>15 minutes</span>
+                    <span>${timeInMinutes} minutes</span>
                 </div>
                 <div class="quiz-stat">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -267,7 +277,7 @@ class QuizManager {
         const instructionsList = document.querySelector('.quiz-instructions ul');
         if (instructionsList) {
             instructionsList.innerHTML = `
-                <li>You have 15 minutes to complete ${totalQuestions} questions</li>
+                <li>You have ${timeInMinutes} minutes to complete ${totalQuestions} questions</li>
                 <li>Each question is worth ${totalQuestions > 0 ? Math.round(100 / totalQuestions) : 0} points</li>
                 <li>You can review and change answers before submitting</li>
             `;
@@ -635,7 +645,7 @@ class QuizManager {
         // Reset quiz state
         this.currentQuestionIndex = 0;
         this.userAnswers = new Array(this.questions.length).fill(null);
-        this.timeRemaining = this.timeLimit;
+        this.calculateTimeLimit(); // Recalculate time limit
         this.startTime = null;
         this.endTime = null;
 
@@ -650,7 +660,7 @@ class QuizManager {
         // Reset timer display
         const timerElement = document.getElementById('quizTimer');
         if (timerElement) {
-            timerElement.textContent = '15:00';
+            timerElement.textContent = this.formatTime(this.timeLimit);
             timerElement.style.color = 'var(--primary)';
         }
     }
@@ -682,10 +692,19 @@ class QuizManager {
         const modalHtml = `
             <div class="confirmation-modal-overlay">
                 <div class="confirmation-modal">
-                    <p>${message}</p>
-                    <div class="modal-buttons">
-                        <button id="confirmBtn" class="btn btn--primary">Confirm</button>
-                        <button id="cancelBtn" class="btn btn--secondary">Cancel</button>
+                    <div class="modal-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </div>
+                    <div class="modal-content">
+                        <p>${message}</p>
+                        <div class="modal-buttons">
+                            <button id="confirmBtn" class="btn btn--accent">Confirm</button>
+                            <button id="cancelBtn" class="btn btn--secondary">Cancel</button>
+                        </div>
                     </div>
                 </div>
             </div>

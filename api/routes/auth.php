@@ -26,8 +26,54 @@ switch ($action) {
     case 'check_session':
         handle_check_session();
         break;
+    case 'check_email':
+        handle_check_email($conn);
+        break;
+    case 'reset_password':
+        handle_reset_password($conn);
+        break;
     default:
         send_response(['error' => 'Invalid action'], 400);
+}
+
+function handle_check_email($conn) {
+    $email = $_GET['email'] ?? '';
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        send_response(['exists' => false]);
+        return;
+    }
+
+    $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+    $stmt->bind_param('s', $email);
+    $stmt->execute();
+    $stmt->store_result();
+
+    send_response(['exists' => $stmt->num_rows > 0]);
+}
+
+function handle_reset_password($conn) {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        send_response(['error' => 'Invalid request method'], 405);
+    }
+
+    $data = json_decode(file_get_contents('php://input'), true);
+    $email = $data['email'] ?? '';
+    $password = $data['password'] ?? '';
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL) || empty($password)) {
+        send_response(['error' => 'Invalid input'], 400);
+        return;
+    }
+
+    $hash = password_hash($password, PASSWORD_DEFAULT);
+    $stmt = $conn->prepare("UPDATE users SET password_hash = ? WHERE email = ?");
+    $stmt->bind_param('ss', $hash, $email);
+
+    if ($stmt->execute()) {
+        send_response(['success' => true]);
+    } else {
+        send_response(['error' => 'Password reset failed'], 500);
+    }
 }
 
 function handle_login($conn) {

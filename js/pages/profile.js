@@ -17,13 +17,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         fetch('api/routes/auth.php?action=logout', { method: 'POST' })
             .then(() => window.location.href = 'auth.html');
     });
+
 });
 
 function loadProfileData() {
     fetch('api/routes/profile.php')
         .then(res => res.json())
         .then(data => {
-            console.log(data);
             if (data.error) {
                 console.error(data.error);
                 return;
@@ -40,23 +40,20 @@ function populateProfile(data) {
     // Header
     document.getElementById('username').textContent = user.username;
     document.getElementById('level').textContent = `Level ${stats.level}`;
-    const progressBar = document.getElementById('progress-bar');
-    const progressLabel = document.getElementById('progress-label');
-    progressBar.style.width = `${stats.progress}%;`;
-    progressLabel.textContent = `${stats.progress}% to next level`;
+
 
     const profileImage = document.getElementById('profileImage');
     if (user.profile_image) {
         profileImage.innerHTML = `<img src="data:image/png;base64,${user.profile_image}" alt="Profile Image" class="profile-avatar">`;
     } else {
-        document.getElementById('avatar-initials').textContent = (user.username || 'U')[0].toUpperCase();
+        profileImage.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="profile-avatar"><circle cx="12" cy="7" r="4"></circle><path d="M5.5 21v-2a4 4 0 0 1 4-4h5a4 4 0 0 1 4 4v2"></path></svg>';
     }
 
     // Details
     document.getElementById('fullName').textContent = user.username;
     document.getElementById('email').textContent = user.email;
     document.getElementById('memberSince').textContent = new Date(user.created_at).toLocaleDateString();
-    document.getElementById('learningFocus').textContent = data.learning_focus || 'Not set';
+
 
     // Achievements
     const achievementsContainer = document.getElementById('achievements');
@@ -78,6 +75,8 @@ function populateProfile(data) {
         achievementsContainer.innerHTML = '<p>No achievements yet.</p>';
     }
 }
+
+
 
 async function ensureLoggedIn() {
     try {
