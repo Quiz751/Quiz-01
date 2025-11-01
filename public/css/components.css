@@ -50,12 +50,28 @@
 }
 
 .confirmation-modal {
+    width: 100%;
+    max-width: 400px;
     background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
     padding: var(--space-xl);
-    border-radius: var(--radius-lg);
-    text-align: center;
     box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
     animation: fadeIn 0.3s ease-out;
+}
+
+.confirmation-modal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
 }
 
 @keyframes fadeIn {
@@ -74,4 +90,18 @@
     display: flex;
     gap: var(--space-md);
     justify-content: center;
+}
+
+.confirmation-modal .form__input {
+    background: transparent;
+}
+
+.confirmation-modal .form__label {
+    background: transparent;
+}
+
+.confirmation-modal h2,
+.confirmation-modal p,
+.confirmation-modal .form__label {
+    color: var(--text);
 }

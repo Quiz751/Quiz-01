@@ -45,8 +45,7 @@ function setNeutralDashboard() {
 }
 
 async function ensureLoggedInThenLoad() {
-    try {
-        const res = await fetch('api/routes/auth.php?action=check_session', { credentials: 'include' });
+        const res = await fetch('../../../api/routes/auth.php?action=check_session', { credentials: 'include' });
         const data = await res.json().catch(() => ({}));
         if (!res.ok || !data || data.logged_in !== true) {
             window.location.href = 'auth.html';
@@ -239,7 +238,7 @@ function setupContinueButton(history) {
     if (!btn) return;
     btn.addEventListener('click', async () => {
         try {
-            const res = await fetch('api/routes/auth.php?action=check_session', { credentials: 'include' });
+            const res = await fetch('../../../api/routes/auth.php?action=check_session', { credentials: 'include' });
             const data = await res.json().catch(() => ({}));
             if (!res.ok || !data || data.logged_in !== true) {
                 window.location.href = 'auth.html';

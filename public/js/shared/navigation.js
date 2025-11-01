@@ -1,5 +1,5 @@
 // Shared Navigation JavaScript
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initNavigation();
     checkSessionAndToggleCTA();
 });
@@ -9,7 +9,7 @@ function initNavigation() {
     window.addEventListener('scroll', () => {
         const header = document.getElementById('header');
         const scrolled = window.scrollY > 16;
-        
+
         if (scrolled) {
             header.classList.add('header--scrolled');
         } else {
@@ -20,11 +20,11 @@ function initNavigation() {
     // Handle mobile menu toggle
     const mobileToggle = document.getElementById('mobileToggle');
     const mobileMenu = document.getElementById('mobileMenu');
-    
+
     if (mobileToggle && mobileMenu) {
         mobileToggle.addEventListener('click', () => {
             const isOpen = mobileMenu.style.display === 'block';
-            
+
             if (isOpen) {
                 mobileMenu.classList.remove('show');
                 setTimeout(() => mobileMenu.style.display = 'none', 300);
@@ -39,14 +39,18 @@ function initNavigation() {
 }
 
 async function checkSessionAndToggleCTA() {
+    const btn = document.querySelector('.nav .btn.btn--primary');
+    btn.style.display = 'none';
     try {
-        const res = await fetch('api/routes/auth.php?action=check_session', { credentials: 'include' });
+        const res = await fetch('../../../api/routes/auth.php?action=check_session', { credentials: 'include' });
         const data = await res.json().catch(() => ({}));
         if (res.ok && data && data.logged_in) {
-            const btn = document.querySelector('.nav .btn.btn--primary');
             if (btn) {
                 btn.style.display = 'none';
             }
+            else{
+                btn.style.display = 'block';
+            }
         }
-    } catch (_) {}
+    } catch (_) { }
 }

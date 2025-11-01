@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 async function loadChapters(subjectId) {
     try {
-        const res = await fetch(`api/routes/chapters.php?subject_id=${encodeURIComponent(subjectId)}`);
+        const res = await fetch(`../../../api/routes/chapters.php?subject_id=${encodeURIComponent(subjectId)}`);
         if (!res.ok) throw new Error('Failed to load chapters');
         const data = await res.json();
         console.log(data);

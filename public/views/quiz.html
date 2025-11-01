@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuizAI - Quiz</title>
     <!-- Shared CSS files -->
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/layout.css">
-    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
     <!-- Page-specific CSS -->
-    <link rel="stylesheet" href="css/pages/quiz.css">
+    <link rel="stylesheet" href="../css/pages/quiz.css">
 </head>
 
 <body>
@@ -31,9 +31,7 @@
                 </ul>
 
                 <div class="nav__actions">
-                    <a href="auth.html" class="btn btn--primary">
-                        <span>Get Started</span>
-                    </a>
+
 
                     <!-- Mobile Menu Button -->
                     <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Toggle mobile menu">
@@ -68,6 +66,8 @@
                                 <!-- Stats will be dynamically loaded -->
                             </div>
                         </div>
+
+                        <div class="quiz-timer-display" id="quizTimer"></div>
 
                         <!-- Quiz Start Screen -->
                         <div class="quiz-content" id="quizStartScreen">
@@ -213,9 +213,10 @@
     </div>
 
     <!-- Page-specific JavaScript -->
-    <script src="js/shared/navigation.js"></script>
-    <script src="js/shared/theme.js"></script>
-    <script src="js/pages/quiz.js"></script>
+    <script src="../js/shared/navigation.js"></script>
+    <script src="../js/shared/theme.js"></script>
+    <script src="../js/components/modal.js"></script>
+    <script src="../js/pages/quiz.js"></script>
 
 </body>
 

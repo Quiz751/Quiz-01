@@ -216,13 +216,41 @@ class QuizManager {
         // Smooth transition from start screen to question screen
         this.transitionToQuestionScreen();
 
-        // Timer disabled per requirements (hidden and not used)
+        // Start the timer
+        this.timerInterval = setInterval(() => {
+            this.timeRemaining--;
+            this.updateTimerDisplay();
+
+            if (this.timeRemaining <= 0) {
+                clearInterval(this.timerInterval);
+                this.submitQuiz(true); // Auto-submit
+            }
+        }, 1000);
+        this.updateTimerDisplay(); // Display initial time
 
         // Load first question
         this.loadQuestion(0);
 
         // Update progress
         this.updateProgress();
+    }
+
+    updateTimerDisplay() {
+        const timerElement = document.querySelector('.quiz-timer-display');
+        if (timerElement) {
+            const minutes = Math.floor(this.timeRemaining / 60);
+            const seconds = this.timeRemaining % 60;
+            timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+            // Change color if time is low
+            if (this.timeRemaining <= 10) {
+                timerElement.style.color = 'var(--danger)';
+                console.log(`Timer: ${this.timeRemaining}, Color: var(--danger)`);
+            } else {
+                timerElement.style.color = 'var(--primary)';
+                console.log(`Timer: ${this.timeRemaining}, Color: var(--primary)`);
+            }
+        }
     }
 
     transitionToQuestionScreen() {
@@ -385,8 +413,10 @@ class QuizManager {
         // Save answer
         this.userAnswers[this.currentQuestionIndex] = optionIndex;
 
-        // Enable next button
-        document.getElementById('nextQuestionBtn').disabled = false;
+        // Automatically move to the next question after a short delay
+        setTimeout(() => {
+            this.nextQuestion();
+        }, 250);
     }
 
     addRippleEffect(element) {
@@ -430,8 +460,7 @@ class QuizManager {
             submitBtn.style.display = 'none';
         }
 
-        // Enable next if current question is answered
-        nextBtn.disabled = this.userAnswers[this.currentQuestionIndex] === null;
+
     }
 
     updateProgress() {
@@ -450,8 +479,19 @@ class QuizManager {
         }
     }
 
-    submitQuiz() {
-        this.showConfirmationModal('Are you sure you want to submit the quiz? You cannot change your answers after submission.', () => {
+    submitQuiz(isAuto = false) {
+        const unansweredQuestions = this.userAnswers.filter(answer => answer === null).length;
+
+        if (!isAuto && unansweredQuestions > 0) {
+            this.showConfirmationModal('You have unanswered questions. Please answer all questions before submitting.', null, true);
+            return;
+        }
+
+        const confirmationMessage = isAuto
+            ? 'Time is up! The quiz will be submitted automatically.'
+            : 'Are you sure you want to submit the quiz? You cannot change your answers after submission.';
+
+        this.showConfirmationModal(confirmationMessage, () => {
             clearInterval(this.timerInterval);
             this.endTime = new Date();
             const results = this.calculateResults();
@@ -688,7 +728,7 @@ class QuizManager {
         }, 300);
     }
 
-    showConfirmationModal(message, onConfirm) {
+    showConfirmationModal(message, onConfirm, isInfo = false) {
         const modalHtml = `
             <div class="confirmation-modal-overlay">
                 <div class="confirmation-modal">
@@ -702,8 +742,8 @@ class QuizManager {
                     <div class="modal-content">
                         <p>${message}</p>
                         <div class="modal-buttons">
-                            <button id="confirmBtn" class="btn btn--accent">Confirm</button>
-                            <button id="cancelBtn" class="btn btn--secondary">Cancel</button>
+                            ${!isInfo ? '<button id="confirmBtn" class="btn btn--accent">Confirm</button>' : ''}
+                            <button id="cancelBtn" class="btn btn--secondary">${isInfo ? 'Close' : 'Cancel'}</button>
                         </div>
                     </div>
                 </div>
@@ -713,10 +753,12 @@ class QuizManager {
         const body = document.querySelector('body');
         body.insertAdjacentHTML('beforeend', modalHtml);
 
-        document.getElementById('confirmBtn').addEventListener('click', () => {
-            onConfirm();
-            this.removeConfirmationModal();
-        });
+        if (!isInfo) {
+            document.getElementById('confirmBtn').addEventListener('click', () => {
+                onConfirm();
+                this.removeConfirmationModal();
+            });
+        }
 
         document.getElementById('cancelBtn').addEventListener('click', () => {
             this.removeConfirmationModal();

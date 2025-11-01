@@ -1,8 +1,9 @@
-// Simplified Auth Page JavaScript
+
 document.addEventListener('DOMContentLoaded', function() {
     setupAuthTabs();
     setupPasswordToggle();
     setupAuthSubmitHandlers();
+    setupForgotPassword();
 });
 
 function setupAuthTabs() {
@@ -76,7 +77,7 @@ function setupAuthSubmitHandlers() {
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Signing In...';
                 try {
-                    const res = await fetch('api/routes/auth.php?action=login', {
+                    const res = await fetch('../../../api/routes/auth.php?action=login', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         credentials: 'include',
@@ -84,12 +85,12 @@ function setupAuthSubmitHandlers() {
                     });
                     const data = await res.json().catch(() => ({}));
                     if (!res.ok || data.error) {
-                        alert(data.error || 'Login failed');
+                        showAlert('Error', data.error || 'Login failed');
                     } else {
                         window.location.href = 'subjects.html';
                     }
                 } catch (e) {
-                    alert('Network error. Please try again.');
+                    showAlert('Error', 'Network error. Please try again.');
                 } finally {
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Sign In';
@@ -110,7 +111,7 @@ function setupAuthSubmitHandlers() {
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Creating...';
                 try {
-                    const res = await fetch('api/routes/auth.php?action=register', {
+                    const res = await fetch('../../../api/routes/auth.php?action=register', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         credentials: 'include',
@@ -118,10 +119,10 @@ function setupAuthSubmitHandlers() {
                     });
                     const data = await res.json().catch(() => ({}));
                     if (!res.ok || data.error) {
-                        alert(data.error || 'Registration failed');
+                        showAlert('Error', data.error || 'Registration failed');
                     } else {
                         // Auto-login after signup
-                        const loginRes = await fetch('api/routes/auth.php?action=login', {
+                        const loginRes = await fetch('../../../api/routes/auth.php?action=login', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             credentials: 'include',
@@ -134,7 +135,7 @@ function setupAuthSubmitHandlers() {
                         }
                     }
                 } catch (e) {
-                    alert('Network error. Please try again.');
+                    showAlert('Error', 'Network error. Please try again.');
                 } finally {
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Create Account';
